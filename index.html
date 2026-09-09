@@ -1209,14 +1209,8 @@ if (window.pdfjsLib) {
                 <input type="tel" class="form-control" id="passportMobile" placeholder="Mobile Number" maxlength="10" pattern="[0-9]{10}" required>
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-bold">Aadhar Number</label>
-                <input type="text" class="form-control" id="passportAadhar" placeholder="1234 5678 9012" maxlength="14">
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="passportPassword" placeholder="Enter password">
+                <label class="form-label fw-bold">Date of Birth</label>
+                <input type="date" class="form-control" id="passportDOB">
               </div>
             </div>
             <h6 class="text-pnb-primary mb-3 mt-4">Payment Details</h6>
@@ -1332,12 +1326,6 @@ if (window.pdfjsLib) {
                 <input type="text" class="form-control" id="aadhaarNumber" placeholder="1234 5678 9012" maxlength="14" required>
               </div>
             </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="aadhaarPassword" placeholder="Enter password">
-              </div>
-            </div>
             <input type="hidden" id="aadhaarId">
           </form>
         </div>
@@ -1351,67 +1339,34 @@ if (window.pdfjsLib) {
 
   <!-- PAN Modal -->
   <div class="modal fade" id="panModal" tabindex="-1" aria-labelledby="panModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="panModalLabel"><i class="fas fa-credit-card me-2"></i>PAN Card Application</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="panForm">
-            <h6 class="text-pnb-primary mb-3">Applicant Details</h6>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label fw-bold required-field">Full Name</label>
-                <input type="text" class="form-control uppercase" id="panName" placeholder="CUSTOMER NAME" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-bold">Father/Husband Name</label>
-                <input type="text" class="form-control uppercase" id="panFatherName" placeholder="FATHER NAME">
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label fw-bold required-field">Mobile Number (10 digits)</label>
-                <input type="tel" class="form-control" id="panMobile" placeholder="Mobile Number" maxlength="10" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-bold required-field">PAN Application Number (10-11 digit)</label>
-                <input type="text" class="form-control" id="panApplicationNo" placeholder="ABCDE1234F" maxlength="11" required>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="panPassword" placeholder="Enter password">
-              </div>
-            </div>
-            <h6 class="text-pnb-primary mb-3 mt-4">Payment Details</h6>
-            <div class="payment-details">
-              <div class="row">
-                <div class="col-md-4">
-                  <label class="form-label fw-bold">Total (₹)</label>
-                  <input type="number" class="form-control" id="panTotal" placeholder="Total" min="0" step="0.01" value="0.00">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label fw-bold">Paid (₹)</label>
-                  <input type="number" class="form-control" id="panPaid" placeholder="Paid" min="0" step="0.01" value="0.00">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label fw-bold">Pending</label>
-                  <input type="text" class="form-control" id="panPending" placeholder="Pending" readonly>
-                </div>
-              </div>
-            </div>
-            <input type="hidden" id="panId">
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" id="savePANBtn" class="btn btn-pnb-primary">Save Application</button>
-        </div>
+    <div class="modal-dialog modal-lg"><div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="panModalLabel"><i class="fas fa-credit-card me-2"></i>PAN Card Application</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-    </div>
+      <div class="modal-body">
+        <form id="panForm">
+          <h6 class="text-pnb-primary mb-3">Applicant Details</h6>
+          <div class="row mb-3">
+            <div class="col-md-6"><label class="form-label fw-bold required-field">Full Name</label><input type="text" class="form-control uppercase" id="panName" placeholder="CUSTOMER NAME" required></div>
+            <div class="col-md-6"><label class="form-label fw-bold">Father/Husband Name</label><input type="text" class="form-control uppercase" id="panFatherName" placeholder="FATHER NAME"></div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6"><label class="form-label fw-bold required-field">Mobile Number (10 digits)</label><input type="tel" class="form-control" id="panMobile" placeholder="Mobile Number" maxlength="10" pattern="[0-9]{10}" required></div>
+            <div class="col-md-6"><label class="form-label fw-bold">Date of Birth</label><input type="date" class="form-control" id="panDOB"></div>
+          </div>
+          <h6 class="text-pnb-primary mb-3 mt-4">Payment Details</h6>
+          <div class="payment-details"><div class="row">
+            <div class="col-md-4"><label class="form-label fw-bold">Total (₹)</label><input type="number" class="form-control" id="panTotal" placeholder="Total" min="0" step="0.01" value="0.00"></div>
+            <div class="col-md-4"><label class="form-label fw-bold">Paid (₹)</label><input type="number" class="form-control" id="panPaid" placeholder="Paid" min="0" step="0.01" value="0.00"></div>
+            <div class="col-md-4"><label class="form-label fw-bold">Pending</label><input type="text" class="form-control" id="panPending" placeholder="Pending" readonly></div>
+          </div></div>
+          <div class="row mb-3 mt-3"><div class="col-md-6"><label class="form-label fw-bold required-field">Application Number</label><input type="text" class="form-control" id="panApplicationNo" placeholder="Application Number" required></div></div>
+          <input type="hidden" id="panId">
+        </form>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" id="savePANBtn" class="btn btn-pnb-primary">Save Application</button></div>
+    </div></div>
   </div>
 
   <!-- eSarvish Modal -->
@@ -1443,12 +1398,6 @@ if (window.pdfjsLib) {
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Application Number</label>
                 <input type="text" class="form-control" id="esarvishApplicationNo" placeholder="Application Number" required>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="esarvishPassword" placeholder="Enter password">
               </div>
             </div>
             <h6 class="text-pnb-primary mb-3 mt-4">Payment Details</h6>
@@ -1512,8 +1461,8 @@ if (window.pdfjsLib) {
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
-                <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="licensePassword" placeholder="Enter password">
+                <label class="form-label fw-bold required-field">Date of Birth</label>
+                <input type="date" class="form-control" id="licenseDOB" required>
               </div>
             </div>
             <h6 class="text-pnb-primary mb-3 mt-4">Payment Details</h6>
@@ -1580,10 +1529,6 @@ if (window.pdfjsLib) {
                 <label class="form-label fw-bold required-field">Account Number</label>
                 <input type="text" class="form-control account-format" id="accountNumber" placeholder="Account Number" maxlength="22" required>
               </div>
-              <div class="col-md-6">
-                <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="accountPassword" placeholder="Enter password">
-              </div>
             </div>
             <input type="hidden" id="accountId">
           </form>
@@ -1631,10 +1576,6 @@ if (window.pdfjsLib) {
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Account Number</label>
                 <input type="text" class="form-control account-format" id="bobAccountNumber" placeholder="Account Number" maxlength="22" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="bobAccountPassword" placeholder="Enter password">
               </div>
             </div>
             <input type="hidden" id="bobAccountId">
@@ -2337,12 +2278,12 @@ if (window.pdfjsLib) {
                 document.getElementById('passportName').value = cust.name || '';
                 document.getElementById('passportFatherName').value = cust.fatherName || '';
                 document.getElementById('passportMobile').value = cust.mobile || '';
-                document.getElementById('passportAadhar').value = formatAadhar(cust.aadhar) || '';
+                document.getElementById('passportDOB').value = cust.dateOfBirth || '';
                 document.getElementById('passportTotal').value = cust.total || 0;
                 document.getElementById('passportPaid').value = cust.paid || 0;
                 document.getElementById('passportPending').value = cust.pending || 0;
                 document.getElementById('passportApplicationNo').value = cust.applicationNo || '';
-                document.getElementById('passportPassword').value = cust.password || '';
+                
                 passportModal.show();
                 break;
               case 'epfo':
@@ -2360,7 +2301,6 @@ if (window.pdfjsLib) {
                 document.getElementById('aadhaarFatherName').value = cust.fatherName || '';
                 document.getElementById('aadhaarMobile').value = cust.mobile || '';
                 document.getElementById('aadhaarNumber').value = formatAadhar(cust.aadhar) || '';
-                document.getElementById('aadhaarPassword').value = cust.password || '';
                 aadhaarModal.show();
                 break;
               case 'pan':
@@ -2368,6 +2308,7 @@ if (window.pdfjsLib) {
                 document.getElementById('panName').value = cust.name || '';
                 document.getElementById('panFatherName').value = cust.fatherName || '';
                 document.getElementById('panMobile').value = cust.mobile || '';
+                document.getElementById('panDOB').value = cust.dateOfBirth || cust.dob || '';
                 document.getElementById('panTotal').value = cust.total || 0;
                 document.getElementById('panPaid').value = cust.paid || 0;
                 document.getElementById('panPending').value = cust.pending || 0;
@@ -2384,7 +2325,6 @@ if (window.pdfjsLib) {
                 document.getElementById('esarvishPaid').value = cust.paid || 0;
                 document.getElementById('esarvishPending').value = cust.pending || 0;
                 document.getElementById('esarvishApplicationNo').value = cust.applicationNo || '';
-                document.getElementById('esarvishPassword').value = cust.password || '';
                 esarvishModal.show();
                 break;
               case 'license':
@@ -2396,7 +2336,7 @@ if (window.pdfjsLib) {
                 document.getElementById('licensePaid').value = cust.paid || 0;
                 document.getElementById('licensePending').value = cust.pending || 0;
                 document.getElementById('licenseApplicationNo').value = cust.applicationNo || '';
-                document.getElementById('licensePassword').value = cust.password || '';
+                document.getElementById('licenseDOB').value = cust.dateOfBirth || '';
                 licenseModal.show();
                 break;
               case 'pnb_account':
@@ -2406,7 +2346,6 @@ if (window.pdfjsLib) {
                 document.getElementById('accountMobile').value = cust.mobile || '';
                 document.getElementById('accountAadhar').value = formatAadhar(cust.aadhar) || '';
                 document.getElementById('accountNumber').value = formatAccount(cust.account) || '';
-                document.getElementById('accountPassword').value = cust.password || '';
                 pnbAccountModal.show();
                 break;
               case 'bob_account':
@@ -2416,7 +2355,6 @@ if (window.pdfjsLib) {
                 document.getElementById('bobAccountMobile').value = cust.mobile || '';
                 document.getElementById('bobAccountAadhar').value = formatAadhar(cust.aadhar) || '';
                 document.getElementById('bobAccountNumber').value = formatAccount(cust.account) || '';
-                document.getElementById('bobAccountPassword').value = cust.password || '';
                 bobAccountModal.show();
                 break;
             }
@@ -2449,7 +2387,6 @@ if (window.pdfjsLib) {
           mobile: mobile,
           aadhar: document.getElementById('bobAccountAadhar').value.replace(/\s+/g, ''),
           account: accountNumber,
-          password: document.getElementById('bobAccountPassword').value,
           serviceType: 'bob_account',
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
@@ -2598,8 +2535,7 @@ if (window.pdfjsLib) {
           name: name.toUpperCase(),
           fatherName: document.getElementById('passportFatherName').value.toUpperCase(),
           mobile: mobile,
-          aadhar: document.getElementById('passportAadhar').value.replace(/\s+/g, ''),
-          password: document.getElementById('passportPassword').value,
+          dateOfBirth: document.getElementById('passportDOB').value,
           total: parseFloat(document.getElementById('passportTotal').value) || 0,
           paid: parseFloat(document.getElementById('passportPaid').value) || 0,
           pending: parseFloat(document.getElementById('passportPending').value) || 0,
@@ -2666,7 +2602,6 @@ if (window.pdfjsLib) {
           fatherName: document.getElementById('aadhaarFatherName').value.toUpperCase(),
           mobile: mobile,
           aadhar: aadhar,
-          password: document.getElementById('aadhaarPassword').value,
           serviceType: 'aadhaar',
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
@@ -2695,7 +2630,8 @@ if (window.pdfjsLib) {
           fatherName: document.getElementById('panFatherName').value.toUpperCase(),
           mobile: mobile,
           panNo: panNo,
-          password: document.getElementById('panPassword').value,
+          dateOfBirth: document.getElementById('panDOB').value,
+          applicationNo: panNo,
           total: parseFloat(document.getElementById('panTotal').value) || 0,
           paid: parseFloat(document.getElementById('panPaid').value) || 0,
           pending: parseFloat(document.getElementById('panPending').value) || 0,
@@ -2727,7 +2663,6 @@ if (window.pdfjsLib) {
           fatherName: document.getElementById('esarvishFatherName').value.toUpperCase(),
           mobile: mobile,
           applicationNo: appNo,
-          password: document.getElementById('esarvishPassword').value,
           total: parseFloat(document.getElementById('esarvishTotal').value) || 0,
           paid: parseFloat(document.getElementById('esarvishPaid').value) || 0,
           pending: parseFloat(document.getElementById('esarvishPending').value) || 0,
@@ -2743,8 +2678,9 @@ if (window.pdfjsLib) {
         const mobile = document.getElementById('licenseMobile').value;
         const appNo = document.getElementById('licenseApplicationNo').value;
         const appId = document.getElementById('licenseId').value;
+        const dateOfBirth = document.getElementById('licenseDOB').value;
         
-        if (!name || !mobile || !appNo) {
+        if (!name || !mobile || !appNo || !dateOfBirth) {
           showAlert('Please fill all required fields', 'danger');
           return;
         }
@@ -2764,7 +2700,7 @@ if (window.pdfjsLib) {
           fatherName: document.getElementById('licenseFatherName').value.toUpperCase(),
           mobile: mobile,
           applicationNo: appNo,
-          password: document.getElementById('licensePassword').value,
+          dateOfBirth: dateOfBirth,
           total: parseFloat(document.getElementById('licenseTotal').value) || 0,
           paid: parseFloat(document.getElementById('licensePaid').value) || 0,
           pending: parseFloat(document.getElementById('licensePending').value) || 0,
@@ -2802,7 +2738,6 @@ if (window.pdfjsLib) {
           mobile: mobile,
           aadhar: document.getElementById('accountAadhar').value.replace(/\s+/g, ''),
           account: accountNumber,
-          password: document.getElementById('accountPassword').value,
           serviceType: 'pnb_account',
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
@@ -4020,7 +3955,7 @@ document.addEventListener('DOMContentLoaded', function () {
     '<input type="file" accept=".pdf" style="display:block;margin-top:8px;width:100%">' +
     '<div class="pnb-status" style="margin-top:8px;font-weight:600"></div>';
 
-  form.insertBefore(box, form.firstChild);
+  // PDF upload section disabled.
 
   const input = box.querySelector('input');
   const status = box.querySelector('.pnb-status');
@@ -4168,7 +4103,7 @@ document.addEventListener('DOMContentLoaded', function () {
       '<input type="file" accept=".pdf" style="display:block;margin-top:8px;width:100%">' +
       '<div class="esarvish-status" style="margin-top:8px;font-weight:600"></div>';
 
-    form.insertBefore(box, form.firstChild);
+    // PDF upload section disabled.
 
     const input = box.querySelector('input');
     const status = box.querySelector('.esarvish-status');
@@ -4324,7 +4259,7 @@ document.addEventListener('DOMContentLoaded', function () {
       '<input type="file" accept=".pdf" style="display:block;margin-top:8px;width:100%">' +
       '<div class="pan-status" style="margin-top:8px;font-weight:600"></div>';
 
-    form.insertBefore(box, form.firstChild);
+    // PDF upload section disabled.
 
     const input = box.querySelector('input');
     const status = box.querySelector('.pan-status');
@@ -4499,7 +4434,7 @@ document.addEventListener('DOMContentLoaded', function () {
       '<input type="file" accept=".pdf" style="display:block;margin-top:8px;width:100%">' +
       '<div class="passport-status" style="margin-top:8px;font-weight:600"></div>';
 
-    form.insertBefore(box, form.firstChild);
+    // PDF upload section disabled.
 
     const input = box.querySelector('input');
     const status = box.querySelector('.passport-status');
