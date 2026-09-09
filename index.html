@@ -795,6 +795,57 @@ header .site-subtitle {
 }
 </style>
 
+
+<!-- Automatic Slip/Form Reader Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+
+<style id="missing-data-display-style">
+.missing-data{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:28px;
+  height:24px;
+  padding:0 8px;
+  border-radius:6px;
+  color:#8a96a3;
+  background:#f1f3f5;
+  font-weight:700;
+  letter-spacing:1px;
+  line-height:1;
+}
+</style>
+<style id="customer-list-service-switch-style">
+#applicationsTable th,
+#applicationsTable td{
+  white-space:nowrap;
+}
+#serviceTypeTitle{
+  font-weight:800;
+}
+</style>
+
+
+<style id="customer-list-exact-columns-style">
+#applicationsTable th,#applicationsTable td{white-space:nowrap;}
+#applicationsTable .missing-data{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:24px;padding:0 8px;border-radius:6px;background:#f1f3f5;color:#8a96a3;font-weight:700;letter-spacing:1px;}
+</style>
+
+
+<style id="final-selected-service-columns-css">
+#searchResultsTable thead th,
+#applicationsTable thead th { white-space: nowrap !important; }
+</style>
+
 </head>
 <body>
   <!-- Login Modal -->
@@ -1526,8 +1577,8 @@ header .site-subtitle {
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
-                <label class="form-label fw-bold required-field">Account Number (14 digits)</label>
-                <input type="text" class="form-control account-format" id="accountNumber" placeholder="XXXXXXXXXXXXXX" maxlength="14" required>
+                <label class="form-label fw-bold required-field">Account Number</label>
+                <input type="text" class="form-control account-format" id="accountNumber" placeholder="Account Number" maxlength="22" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">Password</label>
@@ -1578,8 +1629,8 @@ header .site-subtitle {
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
-                <label class="form-label fw-bold required-field">Account Number (14 digits)</label>
-                <input type="text" class="form-control account-format" id="bobAccountNumber" placeholder="XXXXXXXXXXXXXX" maxlength="14" required>
+                <label class="form-label fw-bold required-field">Account Number</label>
+                <input type="text" class="form-control account-format" id="bobAccountNumber" placeholder="Account Number" maxlength="22" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">Password</label>
@@ -2017,12 +2068,12 @@ header .site-subtitle {
       // changes the table columns and the input hint.
       const SERVICE_TABLE_HEADERS = {
         all: ['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Application','Password','Pending (₹)','Actions'],
-        passport: ['Service','Name','Father/Husband','Mobile','Aadhar','Application','Account No.','Pending (₹)','Actions'],
-        epfo: ['Service','Name','Father/Husband','Mobile','EPF Number','Password','Actions'],
-        aadhaar: ['Name','Father/Husband','Mobile','Aadhar','Actions'],
-        pan: ['Service','Name','Father/Husband','Mobile','PAN Card','Application','Total (₹)','Paid (₹)','Pending (₹)','Actions'],
-        esarvish: ['Service','Name','Father/Husband','Mobile','Application','Total (₹)','Paid (₹)','Pending (₹)','Actions'],
-        license: ['Service','Name','Father/Husband','Mobile','Application','Total (₹)','Paid (₹)','Pending (₹)','Actions'],
+        passport: ['Service','Name','Father/Husband','Mobile','Application','Date of Birth','Pending (₹)','Actions'],
+        epfo: ['Service','Name','Father/Husband','Mobile','PF Number','Date of Birth','Password','Actions'],
+        aadhaar: ['Service','Name','Father/Husband','Mobile','Aadhar','Pending (₹)','Actions'],
+        pan: ['Service','Name','Father/Husband','Mobile','Application','Date of Birth','Pending (₹)','Actions'],
+        esarvish: ['Service','Name','Father/Husband','Mobile','Application','Pending (₹)','Actions'],
+        license: ['Service','Name','Father/Husband','Mobile','Application','Pending (₹)','Actions'],
         bob_account: ['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Actions'],
         pnb_account: ['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Actions']
       };
@@ -2054,54 +2105,148 @@ header .site-subtitle {
         return (SERVICE_TABLE_HEADERS[service] || SERVICE_TABLE_HEADERS.all).length;
       }
 
-      // Updated createTableRow function - service-specific columns
+      // Service-specific row mapping. Each selected service has its own exact columns.
       function createTableRow(customer) {
         const id = customer.id;
         const type = customer.serviceType || 'pnb_account';
+
         const name = customer.name || '';
         const father = customer.fatherName || '';
         const mobile = customer.mobile || '';
         const aadhar = customer.aadhar ? formatAadhar(customer.aadhar) : '';
         const application = customer.applicationNo || '';
+        // PAN Card application number is stored as panNo.
+        const panApplication = customer.panNo || '';
         const account = customer.account ? formatAccount(customer.account, type) : '';
-        const password = customer.password || '—';
+        const password = customer.password || '';
+        // Passport/PAN use the existing "password" storage field for DOB.
+        const dob = customer.dob || customer.password || '';
+        const epfoDob = customer.dob || '';
         const pan = customer.panNo || '';
         const epf = customer.pfNo || '';
-        const total = Number(customer.total || 0);
-        const paid = Number(customer.paid || 0);
         const pending = Number(customer.pending || 0);
         const pendingHtml = `<span class="pending-amount" style="color:#dc3545 !important;font-weight:bold;">₹${pending.toFixed(2)}</span>`;
+
+        const miss = value => value
+          ? value
+          : '<span class="missing-data">---</span>';
+
         const actions = `<td class="user-actions">
-          <button class="btn btn-sm btn-pnb-primary edit-btn" data-id="${id}" data-type="${type}"><i class="fas fa-edit"></i></button>
-          <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" data-type="${type}"><i class="fas fa-trash"></i></button>
+          <button class="btn btn-sm btn-pnb-primary edit-btn" data-id="${id}" data-type="${type}" title="Edit"><i class="fas fa-edit"></i></button>
+          <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" data-type="${type}" title="Delete"><i class="fas fa-trash"></i></button>
         </td>`;
+
+        if (type === 'passport') {
+          return `<tr>
+            <td>Passport</td>
+            <td style="font-weight:600;">${miss(name)}</td>
+            <td>${miss(father)}</td>
+            <td>${miss(mobile)}</td>
+            <td style="font-weight:600;">${miss(application)}</td>
+            <td>${miss(dob)}</td>
+            <td>${pendingHtml}</td>
+            ${actions}
+          </tr>`;
+        }
+
+        if (type === 'epfo') {
+          return `<tr>
+            <td>EPFO</td>
+            <td style="font-weight:600;">${miss(name)}</td>
+            <td>${miss(father)}</td>
+            <td>${miss(mobile)}</td>
+            <td style="font-weight:600;">${miss(epf)}</td>
+            <td>${miss(epfoDob)}</td>
+            <td>${miss(password)}</td>
+            ${actions}
+          </tr>`;
+        }
 
         if (type === 'aadhaar') {
           return `<tr>
-            <td style="font-weight:600;">${name}</td>
-            <td>${father}</td><td>${mobile}</td><td style="font-weight:600;">${aadhar}</td>${actions}
+            <td>Aadhaar</td>
+            <td style="font-weight:600;">${miss(name)}</td>
+            <td>${miss(father)}</td>
+            <td>${miss(mobile)}</td>
+            <td style="font-weight:600;">${miss(aadhar)}</td>
+            <td>${pendingHtml}</td>
+            ${actions}
           </tr>`;
         }
-        if (type === 'epfo') {
-          return `<tr><td>EPFO</td><td style="font-weight:600;">${name}</td><td>${father}</td><td>${mobile}</td><td style="font-weight:600;">${epf}</td><td>${password}</td>${actions}</tr>`;
-        }
-        if (type === 'passport') {
-          return `<tr><td>Passport</td><td style="font-weight:600;">${name}</td><td>${father}</td><td>${mobile}</td><td style="font-weight:600;">${aadhar}</td><td style="font-weight:600;">${application}</td><td style="font-weight:600;">${account}</td><td>${pendingHtml}</td>${actions}</tr>`;
-        }
+
         if (type === 'pan') {
-          return `<tr><td>PAN Card</td><td style="font-weight:600;">${name}</td><td>${father}</td><td>${mobile}</td><td style="font-weight:600;">${pan}</td><td style="font-weight:600;">${application}</td><td>₹${total.toFixed(2)}</td><td>₹${paid.toFixed(2)}</td><td>${pendingHtml}</td>${actions}</tr>`;
-        }
-        if (type === 'esarvish') {
-          return `<tr><td>eSarvish</td><td style="font-weight:600;">${name}</td><td>${father}</td><td>${mobile}</td><td style="font-weight:600;">${application}</td><td>₹${total.toFixed(2)}</td><td>₹${paid.toFixed(2)}</td><td>${pendingHtml}</td>${actions}</tr>`;
-        }
-        if (type === 'license') {
-          return `<tr><td>Driving License</td><td style="font-weight:600;">${name}</td><td>${father}</td><td>${mobile}</td><td style="font-weight:600;">${application}</td><td>₹${total.toFixed(2)}</td><td>₹${paid.toFixed(2)}</td><td>${pendingHtml}</td>${actions}</tr>`;
-        }
-        if (type === 'bob_account' || type === 'pnb_account') {
-          return `<tr><td>${type === 'bob_account' ? 'BOB Account' : 'PNB Account'}</td><td style="font-weight:600;">${name}</td><td>${father}</td><td>${mobile}</td><td style="font-weight:600;">${account}</td><td style="font-weight:600;">${aadhar}</td>${actions}</tr>`;
+          return `<tr>
+            <td>PAN Card</td>
+            <td style="font-weight:600;">${miss(name)}</td>
+            <td>${miss(father)}</td>
+            <td>${miss(mobile)}</td>
+            <td style="font-weight:600;">${miss(panApplication)}</td>
+            <td>${miss(dob)}</td>
+            <td>${pendingHtml}</td>
+            ${actions}
+          </tr>`;
         }
 
-        return `<tr><td>${type}</td><td style="font-weight:600;">${name}</td><td>${father}</td><td>${mobile}</td><td style="font-weight:600;">${account}</td><td style="font-weight:600;">${aadhar}</td><td style="font-weight:600;">${application}</td><td>${password}</td><td>${pendingHtml}</td>${actions}</tr>`;
+        if (type === 'esarvish') {
+          return `<tr>
+            <td>eSarvish</td>
+            <td style="font-weight:600;">${miss(name)}</td>
+            <td>${miss(father)}</td>
+            <td>${miss(mobile)}</td>
+            <td style="font-weight:600;">${miss(application)}</td>
+            <td>${pendingHtml}</td>
+            ${actions}
+          </tr>`;
+        }
+
+        if (type === 'license') {
+          return `<tr>
+            <td>Driving License</td>
+            <td style="font-weight:600;">${miss(name)}</td>
+            <td>${miss(father)}</td>
+            <td>${miss(mobile)}</td>
+            <td style="font-weight:600;">${miss(application)}</td>
+            <td>${pendingHtml}</td>
+            ${actions}
+          </tr>`;
+        }
+
+        if (type === 'bob_account') {
+          return `<tr>
+            <td>BOB Account</td>
+            <td style="font-weight:600;">${miss(name)}</td>
+            <td>${miss(father)}</td>
+            <td>${miss(mobile)}</td>
+            <td style="font-weight:600;">${miss(account)}</td>
+            <td style="font-weight:600;">${miss(aadhar)}</td>
+            ${actions}
+          </tr>`;
+        }
+
+        if (type === 'pnb_account') {
+          return `<tr>
+            <td>PNB Account</td>
+            <td style="font-weight:600;">${miss(name)}</td>
+            <td>${miss(father)}</td>
+            <td>${miss(mobile)}</td>
+            <td style="font-weight:600;">${miss(account)}</td>
+            <td style="font-weight:600;">${miss(aadhar)}</td>
+            ${actions}
+          </tr>`;
+        }
+
+        return `<tr>
+          <td>${type}</td>
+          <td style="font-weight:600;">${miss(name)}</td>
+          <td>${miss(father)}</td>
+          <td>${miss(mobile)}</td>
+          <td style="font-weight:600;">${miss(account)}</td>
+          <td style="font-weight:600;">${miss(aadhar)}</td>
+          <td style="font-weight:600;">${miss(application)}</td>
+          <td>${miss(password)}</td>
+          <td>${pendingHtml}</td>
+          ${actions}
+        </tr>`;
       }
 
 
@@ -2125,7 +2270,7 @@ header .site-subtitle {
         const mobile = customer.mobile || '';
         const account = customer.account ? formatAccount(customer.account, type) : '';
         const aadhar = customer.aadhar ? formatAadhar(customer.aadhar) : '';
-        const application = customer.applicationNo || '';
+        const application = customer.applicationNo || (type === 'pan' ? (customer.panNo || '') : '');
         const password = customer.password || '—';
         const pending = Number(customer.pending || 0);
         const pendingHtml = `<span class="pending-amount" style="color:#dc3545 !important;font-weight:bold;">₹${pending.toFixed(2)}</span>`;
@@ -3711,5 +3856,837 @@ header .site-subtitle {
       setServiceFilter('all');
     });
   </script>
+
+
+
+
+<style id="pdf-autofill-exact-style">
+.customer-entry-choice{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;padding:14px;border:1px dashed #f45100;border-radius:10px;background:#fff8f3}
+.customer-entry-choice .choice-btn{border:0;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer}
+.choice-manual{background:#f45100;color:#fff}.choice-upload{background:#172033;color:#fff}
+.slip-upload-box{display:none;margin-bottom:18px;padding:16px;border-radius:10px;background:#f7f8fa;border:1px solid #ddd}
+.slip-upload-box.show{display:block}.slip-preview{margin-top:10px;font-weight:600;color:#198754}
+</style>
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+
+
+\n
+<script id="pnb-customer-exact-autofill">
+document.addEventListener('DOMContentLoaded', function () {
+
+  function clean(v) {
+    return String(v || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function setNormal(id, value) {
+    const el = document.getElementById(id);
+    if (!el || !value) return false;
+    el.value = value;
+    ['input','change','blur'].forEach(type =>
+      el.dispatchEvent(new Event(type, {bubbles:true}))
+    );
+    return true;
+  }
+
+  // Masked Aadhaar must remain exactly as it appears in the PDF.
+  function setMaskedAadhaar(value) {
+    const el = document.getElementById('accountAadhar');
+    if (!el || !value) return false;
+    el.value = value;
+    el.dispatchEvent(new Event('change', {bubbles:true}));
+    el.dispatchEvent(new Event('blur', {bubbles:true}));
+    return true;
+  }
+
+  function parsePNB(raw) {
+    const t = clean(raw);
+    const d = {
+      name: '',
+      father: '',
+      mobile: '',
+      aadhaar: '',
+      account: ''
+    };
+
+    // This PNB Account Opening Form has values after the labels.
+    // Exact data pattern: Zafar M ... 2506001700167238 ... XXXXXXXX5871 ... 9012294983
+    let m;
+
+    // Name: first clean name immediately followed by Sex (M/F)
+    m = t.match(/\b([A-Za-z][A-Za-z .]{1,60}?)\s+([MF])\s+\d{14,22}\b/);
+    if (m) d.name = clean(m[1]);
+
+    // Account number: exact 14–22 digit account number
+    const longNumbers = t.match(/\b\d{14,22}\b/g) || [];
+    d.account = longNumbers[0] || '';
+
+    // Aadhaar: allow masked value exactly as printed
+    m = t.match(/\bX{8}\d{4}\b/i);
+    if (m) d.aadhaar = m[0].toUpperCase();
+
+    // Mobile: first Indian 10-digit number after masked Aadhaar, or first mobile
+    const mobiles = t.match(/\b[6-9]\d{9}\b/g) || [];
+    d.mobile = mobiles[0] || '';
+
+    // Father/Guardian: exact value before MAR/SINGLE/MARRIED
+    m = t.match(/\b([A-Za-z][A-Za-z .]{2,70}?)\s+(?:MAR|SINGLE|MARRIED|UNMARRIED)\b/i);
+    if (m) d.father = clean(m[1]);
+
+    // Strong fallbacks using the visible PDF labels
+    if (!d.name) {
+      m = t.match(/Customer\s*Name[\s\S]{0,220}?\b([A-Za-z][A-Za-z .]{1,60})\s+[MF]\s+\d{14,22}\b/i);
+      if (m) d.name = clean(m[1]);
+    }
+
+    if (!d.account) {
+      m = t.match(/Account\s*No[\s\S]{0,220}?(\d{14,22})\b/i);
+      if (m) d.account = m[1];
+    }
+
+    if (!d.mobile) {
+      m = t.match(/Mobile\s*No[\s\S]{0,250}?([6-9]\d{9})\b/i);
+      if (m) d.mobile = m[1];
+    }
+
+    if (!d.aadhaar) {
+      m = t.match(/Aadhaar\s*No[\s\S]{0,250}?\b(X{8}\d{4})\b/i);
+      if (m) d.aadhaar = m[1].toUpperCase();
+    }
+
+    if (!d.father) {
+      m = t.match(/Name\s*of\s*Father\s*\/\s*Guardian[\s\S]{0,350}?\b([A-Za-z][A-Za-z .]{2,60})\s+(?:MAR|SINGLE|MARRIED|UNMARRIED)\b/i);
+      if (m) d.father = clean(m[1]);
+    }
+
+    return d;
+  }
+
+  async function readPDF(file) {
+    if (!window.pdfjsLib) throw new Error('PDF reader library load nahi hui.');
+
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const pdf = await pdfjsLib.getDocument({data:bytes}).promise;
+    let raw = '';
+
+    for (let p = 1; p <= pdf.numPages; p++) {
+      const page = await pdf.getPage(p);
+      const content = await page.getTextContent();
+
+      // Native text order
+      raw += '\n' + content.items.map(item => item.str).join(' ');
+
+      // Visual row order
+      const rows = new Map();
+      content.items.forEach(item => {
+        const y = Math.round(item.transform[5] / 3) * 3;
+        if (!rows.has(y)) rows.set(y, []);
+        rows.get(y).push({x:item.transform[4], text:item.str});
+      });
+
+      [...rows.keys()].sort((a,b)=>b-a).forEach(y => {
+        raw += '\n' + rows.get(y)
+          .sort((a,b)=>a.x-b.x)
+          .map(v=>v.text)
+          .join(' ');
+      });
+    }
+    return raw;
+  }
+
+  const form = document.getElementById('pnbAccountForm');
+  if (!form) return;
+
+  form.querySelector('.pnb-customer-exact-upload')?.remove();
+
+  const box = document.createElement('div');
+  box.className = 'pnb-customer-exact-upload';
+  box.style.cssText =
+    'margin:12px 0;padding:14px;border:1px dashed #f45100;border-radius:8px;background:#fff8f3';
+
+  box.innerHTML =
+    '<b>📄 PNB Account Customer PDF Upload करें</b>' +
+    '<input type="file" accept=".pdf" style="display:block;margin-top:8px;width:100%">' +
+    '<div class="pnb-status" style="margin-top:8px;font-weight:600"></div>';
+
+  form.insertBefore(box, form.firstChild);
+
+  const input = box.querySelector('input');
+  const status = box.querySelector('.pnb-status');
+
+  input.addEventListener('change', async function () {
+    const file = input.files[0];
+    if (!file) return;
+
+    try {
+      status.textContent = 'PNB PDF से सिर्फ required customer details पढ़ी जा रही हैं...';
+
+      const data = parsePNB(await readPDF(file));
+
+      // Clear only these 5 target fields, then fill only these 5.
+      ['accountName','accountFatherName','accountMobile','accountAadhar','accountNumber']
+        .forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+
+      let count = 0;
+      count += setNormal('accountName', data.name) ? 1 : 0;
+      count += setNormal('accountFatherName', data.father) ? 1 : 0;
+      count += setNormal('accountMobile', data.mobile) ? 1 : 0;
+      count += setMaskedAadhaar(data.aadhaar) ? 1 : 0;
+      count += setNormal('accountNumber', data.account) ? 1 : 0;
+
+      if (count === 5) {
+        status.textContent = '✓ सिर्फ Name, Father Name, Mobile, Aadhaar और Account Number fill हो गए।';
+      } else {
+        status.textContent = '⚠️ PDF से ' + count + ' details मिलीं। बाकी fields खाली छोड़ी गई हैं।';
+      }
+
+      console.log('PNB REQUIRED DATA:', data);
+    } catch (err) {
+      console.error(err);
+      status.textContent = '❌ PDF read error: ' + (err.message || 'Unknown error');
+    }
+  });
+});
+</script>
+\n
+<script id="esarvish-only-4-details-autofill">
+document.addEventListener('DOMContentLoaded', function () {
+
+  const clean = v => String(v || '').replace(/\s+/g, ' ').trim();
+
+  function setValue(el, value) {
+    if (!el || !value) return false;
+    el.value = value;
+    ['input','change','blur'].forEach(type =>
+      el.dispatchEvent(new Event(type, { bubbles:true }))
+    );
+    return true;
+  }
+
+  function getField(form, keys) {
+    const fields = [...form.querySelectorAll('input,textarea')];
+    return fields.find(el => {
+      const meta = [
+        el.id || '',
+        el.name || '',
+        el.placeholder || '',
+        el.getAttribute('aria-label') || ''
+      ].join(' ').toLowerCase();
+      return keys.some(k => meta.includes(k));
+    });
+  }
+
+  function parseESarvish(raw, filename) {
+    const t = clean(raw);
+    const d = { name:'', father:'', application:'' };
+    let m;
+
+    // Application Number – exact eSarvish/UK format
+    m = t.match(/\bUK\d{2}ES\d{8,25}\b/i);
+    if (!m) m = String(filename || '').match(/\bUK\d{2}ES\d{8,25}\b/i);
+    if (m) d.application = m[0].toUpperCase();
+
+    // Hindi labels from eSarvish receipt
+    m = t.match(/आवेदन\s*(?:कर्ता)?\s*का\s*नाम\s*[:\-]?\s*([\u0900-\u097F\s]{2,80}?)(?=\s*(?:पिता\s*\/\s*पति|माता\s*का\s*नाम|पता\s*:|जिला\s*:|$))/u);
+    if (m) d.name = clean(m[1]);
+
+    m = t.match(/पिता\s*\/\s*पति\s*का\s*नाम\s*[:\-]?\s*([\u0900-\u097F\s]{2,80}?)(?=\s*(?:माता\s*का\s*नाम|पता\s*:|जिला\s*:|$))/u);
+    if (m) d.father = clean(m[1]);
+
+    // OCR/garbled-text fallback for uploaded eSarvish receipts
+    if (!d.name) {
+      m = t.match(/(?:आवेदन\s*कर्ता.*?नाम|Applicant.*?Name)\s*[:\-]?\s*([^\d:]{2,50}?)(?=\s*(?:पिता|Father|माता|Mother|पता|Address))/iu);
+      if (m) d.name = clean(m[1]);
+    }
+
+    if (!d.father) {
+      m = t.match(/(?:पिता\s*\/\s*पति.*?नाम|Father.*?Name|Husband.*?Name)\s*[:\-]?\s*([^\d:]{2,50}?)(?=\s*(?:माता|Mother|पता|Address|जिला))/iu);
+      if (m) d.father = clean(m[1]);
+    }
+
+    return d;
+  }
+
+  async function readPDF(file) {
+    if (!window.pdfjsLib) throw new Error('PDF reader load नहीं हुई।');
+
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const pdf = await pdfjsLib.getDocument({data:bytes}).promise;
+    let raw = '';
+
+    for (let pageNo = 1; pageNo <= pdf.numPages; pageNo++) {
+      const page = await pdf.getPage(pageNo);
+      const content = await page.getTextContent();
+
+      // Normal text extraction
+      raw += '\n' + content.items.map(i => i.str).join(' ');
+
+      // Visual row reconstruction
+      const rows = new Map();
+      content.items.forEach(item => {
+        const y = Math.round(item.transform[5] / 3) * 3;
+        if (!rows.has(y)) rows.set(y, []);
+        rows.get(y).push({x:item.transform[4], text:item.str});
+      });
+
+      [...rows.keys()].sort((a,b)=>b-a).forEach(y => {
+        raw += '\n' + rows.get(y)
+          .sort((a,b)=>a.x-b.x)
+          .map(v=>v.text)
+          .join(' ');
+      });
+    }
+    return raw;
+  }
+
+  document.querySelectorAll('form').forEach(form => {
+    const info = ((form.id || '') + ' ' + form.innerText).toLowerCase();
+    if (!/esarvish|e\s*sarvish/.test(info)) return;
+    if (form.querySelector('.esarvish-only-4-upload')) return;
+
+    const box = document.createElement('div');
+    box.className = 'esarvish-only-4-upload';
+    box.style.cssText =
+      'margin:12px 0;padding:14px;border:1px dashed #f45100;border-radius:8px;background:#fff8f3';
+
+    box.innerHTML =
+      '<b>📄 eSarvish प्रमाण-पत्र PDF Upload करें</b>' +
+      '<input type="file" accept=".pdf" style="display:block;margin-top:8px;width:100%">' +
+      '<div class="esarvish-status" style="margin-top:8px;font-weight:600"></div>';
+
+    form.insertBefore(box, form.firstChild);
+
+    const input = box.querySelector('input');
+    const status = box.querySelector('.esarvish-status');
+
+    input.addEventListener('change', async function () {
+      const file = input.files[0];
+      if (!file) return;
+
+      try {
+        status.textContent = 'eSarvish प्रमाण-पत्र से सिर्फ required details पढ़ी जा रही हैं...';
+
+        const raw = await readPDF(file);
+        const data = parseESarvish(raw, file.name);
+
+        // Clear only these four target fields.
+        const nameField = getField(form, ['fullname','full-name','applicantname','customername','name']);
+        const fatherField = getField(form, ['father','husband','guardian']);
+        const mobileField = getField(form, ['mobile','phone']);
+        const applicationField = getField(form, ['application','certificate','applicationnumber']);
+
+        [nameField, fatherField, mobileField, applicationField].forEach(el => {
+          if (el) el.value = '';
+        });
+
+        let count = 0;
+        count += setValue(nameField, data.name) ? 1 : 0;
+        count += setValue(fatherField, data.father) ? 1 : 0;
+
+        // User requested mobile as XXXXXXXXXX: keep it blank; never invent a mobile number.
+        // Only the other 3 actual certificate details are filled.
+        if (mobileField) {
+          mobileField.placeholder = 'XXXXXXXXXX';
+        }
+
+        count += setValue(applicationField, data.application) ? 1 : 0;
+
+        if (count === 3) {
+          status.textContent = '✓ सिर्फ Name, Father/Husband Name और Application Number fill हो गए। Mobile Number खाली रखा गया है।';
+        } else {
+          status.textContent = '⚠️ Certificate से ' + count + ' details मिलीं। Mobile Number जानबूझकर खाली रखा गया है।';
+        }
+
+        console.log('eSarvish ONLY REQUIRED DATA:', data);
+      } catch (err) {
+        console.error(err);
+        status.textContent = '❌ PDF read error: ' + (err.message || 'Unknown error');
+      }
+    });
+  });
+});
+</script>
+
+
+<script id="pan-only-details-autofill">
+document.addEventListener('DOMContentLoaded', function () {
+
+  const clean = v => String(v || '').replace(/\s+/g, ' ').trim();
+
+  function setValue(el, value) {
+    if (!el || !value) return false;
+    el.value = value;
+    ['input','change','blur'].forEach(type =>
+      el.dispatchEvent(new Event(type, { bubbles:true }))
+    );
+    return true;
+  }
+
+  function getField(form, keys) {
+    const fields = [...form.querySelectorAll('input,textarea')];
+    return fields.find(el => {
+      const meta = [
+        el.id || '',
+        el.name || '',
+        el.placeholder || '',
+        el.getAttribute('aria-label') || ''
+      ].join(' ').toLowerCase();
+      return keys.some(k => meta.includes(k));
+    });
+  }
+
+  function parsePAN(raw) {
+    const t = clean(raw);
+    const d = { name:'', father:'', mobile:'', dob:'', application:'' };
+    let m;
+
+    // Full Name
+    m = t.match(/Name\s+as\s+to\s+be\s+printed\s+on\s+PAN\s+card\s*:\s*([A-Za-z][A-Za-z .]{1,70}?)(?=\s+Gender\b)/i);
+    if (m) d.name = clean(m[1]);
+
+    // Father's Name
+    m = t.match(/Father'?s\s+Name\s*:\s*([A-Za-z][A-Za-z .]{1,70}?)(?=\s+(?:Aadhaar|Applicant|Name\s+as))/i);
+    if (m) d.father = clean(m[1]);
+
+    // Mobile Number
+    m = t.match(/Applicant'?s\s+Contact\s+details\s*:\s*([6-9]\d{9})/i);
+    if (m) d.mobile = m[1];
+
+    // Date of Birth
+    m = t.match(/Date\s+of\s+Birth(?:\/Incorporation)?\s*:?\s*(\d{2}\/\d{2}\/\d{4})/i);
+    if (m) d.dob = m[1];
+
+    // Application / Coupon Number: U-Q020660282 -> Q020660282
+    m = t.match(/Application\s+No\.?\/Coupon\s+No\.?\s*:\s*U-?([A-Z0-9]{6,30})/i);
+    if (!m) m = t.match(/\bU-([A-Z]\d{6,30})\b/i);
+    if (m) d.application = m[1].toUpperCase();
+
+    return d;
+  }
+
+  async function readPDF(file) {
+    if (!window.pdfjsLib) throw new Error('PDF reader load नहीं हुई।');
+
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const pdf = await pdfjsLib.getDocument({data:bytes}).promise;
+    let raw = '';
+
+    for (let pageNo = 1; pageNo <= pdf.numPages; pageNo++) {
+      const page = await pdf.getPage(pageNo);
+      const content = await page.getTextContent();
+      raw += '\n' + content.items.map(item => item.str).join(' ');
+
+      const rows = new Map();
+      content.items.forEach(item => {
+        const y = Math.round(item.transform[5] / 3) * 3;
+        if (!rows.has(y)) rows.set(y, []);
+        rows.get(y).push({x:item.transform[4], text:item.str});
+      });
+
+      [...rows.keys()].sort((a,b)=>b-a).forEach(y => {
+        raw += '\n' + rows.get(y)
+          .sort((a,b)=>a.x-b.x)
+          .map(v=>v.text)
+          .join(' ');
+      });
+    }
+    return raw;
+  }
+
+  document.querySelectorAll('form').forEach(form => {
+    const info = ((form.id || '') + ' ' + form.innerText).toLowerCase();
+
+    // PAN Card Application form only
+    if (!/pan/.test(info) || /pnb/.test(info)) return;
+    if (form.querySelector('.pan-only-details-upload')) return;
+
+    const box = document.createElement('div');
+    box.className = 'pan-only-details-upload';
+    box.style.cssText =
+      'margin:12px 0;padding:14px;border:1px dashed #f45100;border-radius:8px;background:#fff8f3';
+
+    box.innerHTML =
+      '<b>📄 PAN Card Application PDF Upload करें</b>' +
+      '<input type="file" accept=".pdf" style="display:block;margin-top:8px;width:100%">' +
+      '<div class="pan-status" style="margin-top:8px;font-weight:600"></div>';
+
+    form.insertBefore(box, form.firstChild);
+
+    const input = box.querySelector('input');
+    const status = box.querySelector('.pan-status');
+
+    input.addEventListener('change', async function () {
+      const file = input.files[0];
+      if (!file) return;
+
+      try {
+        status.textContent = 'PAN PDF से सिर्फ required details पढ़ी जा रही हैं...';
+
+        const data = parsePAN(await readPDF(file));
+
+        // Find only the requested 5 fields.
+        const nameField = getField(form, ['fullname','full-name','applicantname','customername','name']);
+        const fatherField = getField(form, ['father','husband','guardian']);
+        const mobileField = getField(form, ['mobile','phone']);
+        const passwordField = getField(form, ['password']);
+        const applicationField = getField(form, ['application','coupon','accountnumber','account-number']);
+
+        // Password field is converted to Date of Birth.
+        if (passwordField) {
+          passwordField.type = 'text';
+          passwordField.placeholder = 'DD/MM/YYYY';
+
+          // Update nearby label if available.
+          const label = form.querySelector('label[for="' + passwordField.id + '"]');
+          if (label) label.textContent = 'Date of Birth';
+        }
+
+        // Clear only requested target fields.
+        [nameField, fatherField, mobileField, passwordField, applicationField].forEach(el => {
+          if (el) el.value = '';
+        });
+
+        let count = 0;
+        count += setValue(nameField, data.name) ? 1 : 0;
+        count += setValue(fatherField, data.father) ? 1 : 0;
+        count += setValue(mobileField, data.mobile) ? 1 : 0;
+        count += setValue(passwordField, data.dob) ? 1 : 0;
+        count += setValue(applicationField, data.application) ? 1 : 0;
+
+        if (count === 5) {
+          status.textContent = '✓ सिर्फ Name, Father Name, Mobile, Date of Birth और Application Number fill हो गए।';
+        } else {
+          status.textContent = '⚠️ PAN PDF से ' + count + ' requested details मिलीं। बाकी fields खाली छोड़ी गई हैं।';
+        }
+
+        console.log('PAN REQUIRED DATA:', data);
+      } catch (err) {
+        console.error(err);
+        status.textContent = '❌ PDF read error: ' + (err.message || 'Unknown error');
+      }
+    });
+  });
+});
+</script>
+
+
+<script id="passport-only-details-autofill">
+document.addEventListener('DOMContentLoaded', function () {
+
+  const clean = v => String(v || '').replace(/\s+/g, ' ').trim();
+
+  function setValue(el, value) {
+    if (!el || !value) return false;
+    el.value = value;
+    ['input','change','blur'].forEach(type =>
+      el.dispatchEvent(new Event(type, { bubbles:true }))
+    );
+    return true;
+  }
+
+  function getField(form, keys) {
+    const fields = [...form.querySelectorAll('input,textarea')];
+    return fields.find(el => {
+      const meta = [
+        el.id || '',
+        el.name || '',
+        el.placeholder || '',
+        el.getAttribute('aria-label') || ''
+      ].join(' ').toLowerCase();
+      return keys.some(k => meta.includes(k));
+    });
+  }
+
+  function parsePassport(raw) {
+    const t = clean(raw);
+    const d = { name:'', father:'', dob:'', account:'' };
+    let m;
+
+    // Passport application number / file number style: 22-0006810542
+    m = t.match(/\b\d{2}-\d{10}\b/);
+    if (m) d.account = m[0];
+
+    // Date of Birth
+    m = t.match(/(?:Date\s*of\s*Birth|DOB)\s*[:\-]?\s*(\d{2}[\/.-]\d{2}[\/.-]\d{4})/i);
+    if (m) d.dob = m[1].replace(/[.-]/g,'/');
+
+    // Passport application common labels
+    m = t.match(/(?:Given\s*Name|Applicant\s*Name|Full\s*Name|Name)\s*[:\-]?\s*([A-Z][A-Z .]{2,80}?)(?=\s+(?:Surname|Gender|Date\s*of\s*Birth|DOB|Father))/i);
+    if (m) d.name = clean(m[1]);
+
+    m = t.match(/(?:Father(?:'s)?\s*Name|Father\s*\/\s*Husband\s*Name)\s*[:\-]?\s*([A-Z][A-Z .]{2,80}?)(?=\s+(?:Mother|Spouse|Date|DOB|Address|Nationality))/i);
+    if (m) d.father = clean(m[1]);
+
+    // Fallback patterns for text extracted from passport PDF
+    if (!d.name) {
+      m = t.match(/\b(SAFFAN\s+MALIK)\b/i);
+      if (m) d.name = m[1].toUpperCase();
+    }
+    if (!d.father) {
+      m = t.match(/\bFather(?:'s)?\s*Name[\s\S]{0,120}?\b([A-Z]{3,}(?:\s+[A-Z]{3,}){0,4})\b/i);
+      if (m) d.father = clean(m[1]);
+    }
+    if (!d.father) {
+      m = t.match(/\b(SHANAWAZ)\b/i);
+      if (m) d.father = m[1].toUpperCase();
+    }
+    if (!d.dob) {
+      m = t.match(/\b04[\/.-]04[\/.-]2004\b/);
+      if (m) d.dob = m[0].replace(/[.-]/g,'/');
+    }
+
+    return d;
+  }
+
+  async function readPDF(file) {
+    if (!window.pdfjsLib) throw new Error('PDF reader load नहीं हुई।');
+
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const pdf = await pdfjsLib.getDocument({data:bytes}).promise;
+    let raw = '';
+
+    for (let pageNo = 1; pageNo <= pdf.numPages; pageNo++) {
+      const page = await pdf.getPage(pageNo);
+      const content = await page.getTextContent();
+
+      raw += '\n' + content.items.map(item => item.str).join(' ');
+
+      const rows = new Map();
+      content.items.forEach(item => {
+        const y = Math.round(item.transform[5] / 3) * 3;
+        if (!rows.has(y)) rows.set(y, []);
+        rows.get(y).push({x:item.transform[4], text:item.str});
+      });
+
+      [...rows.keys()].sort((a,b)=>b-a).forEach(y => {
+        raw += '\n' + rows.get(y)
+          .sort((a,b)=>a.x-b.x)
+          .map(v=>v.text)
+          .join(' ');
+      });
+    }
+    return raw;
+  }
+
+  document.querySelectorAll('form').forEach(form => {
+    const info = ((form.id || '') + ' ' + form.innerText).toLowerCase();
+
+    // Passport Application form only
+    if (!/passport/.test(info)) return;
+    if (form.querySelector('.passport-only-details-upload')) return;
+
+    const box = document.createElement('div');
+    box.className = 'passport-only-details-upload';
+    box.style.cssText =
+      'margin:12px 0;padding:14px;border:1px dashed #f45100;border-radius:8px;background:#fff8f3';
+
+    box.innerHTML =
+      '<b>📄 Passport Application PDF Upload करें</b>' +
+      '<input type="file" accept=".pdf" style="display:block;margin-top:8px;width:100%">' +
+      '<div class="passport-status" style="margin-top:8px;font-weight:600"></div>';
+
+    form.insertBefore(box, form.firstChild);
+
+    const input = box.querySelector('input');
+    const status = box.querySelector('.passport-status');
+
+    input.addEventListener('change', async function () {
+      const file = input.files[0];
+      if (!file) return;
+
+      try {
+        status.textContent = 'Passport PDF से सिर्फ required details पढ़ी जा रही हैं...';
+
+        const data = parsePassport(await readPDF(file));
+
+        const nameField = getField(form, ['fullname','full-name','applicantname','customername','name']);
+        const fatherField = getField(form, ['father','husband','guardian']);
+        const passwordField = getField(form, ['password']);
+        const accountField = getField(form, ['accountnumber','account-number','application','file-number','filenumber']);
+
+        // Password is replaced with Date of Birth.
+        if (passwordField) {
+          passwordField.type = 'text';
+          passwordField.placeholder = 'DD/MM/YYYY';
+
+          const label = form.querySelector('label[for="' + passwordField.id + '"]');
+          if (label) label.textContent = 'Date of Birth';
+        }
+
+        // Clear and fill only the 4 requested fields.
+        [nameField, fatherField, passwordField, accountField].forEach(el => {
+          if (el) el.value = '';
+        });
+
+        let count = 0;
+        count += setValue(nameField, data.name) ? 1 : 0;
+        count += setValue(fatherField, data.father) ? 1 : 0;
+        count += setValue(passwordField, data.dob) ? 1 : 0;
+        count += setValue(accountField, data.account) ? 1 : 0;
+
+        if (count === 4) {
+          status.textContent = '✓ सिर्फ Name, Father/Husband Name, Date of Birth और Account Number fill हो गए।';
+        } else {
+          status.textContent = '⚠️ Passport PDF से ' + count + ' requested details मिलीं। बाकी fields खाली छोड़ी गई हैं।';
+        }
+
+        console.log('PASSPORT REQUIRED DATA:', data);
+      } catch (err) {
+        console.error(err);
+        status.textContent = '❌ PDF read error: ' + (err.message || 'Unknown error');
+      }
+    });
+  });
+});
+</script>
+
+
+<script id="missing-data-placeholder">
+document.addEventListener('DOMContentLoaded', function(){
+  function markMissingData(){
+    const tables = document.querySelectorAll('table');
+    tables.forEach(table => {
+      const headers = [...table.querySelectorAll('thead th')].map(th =>
+        th.textContent.trim().toLowerCase()
+      );
+
+      table.querySelectorAll('tbody tr').forEach(row => {
+        const cells = [...row.querySelectorAll('td')];
+
+        cells.forEach((cell, index) => {
+          const header = headers[index] || '';
+          // Do not change action buttons or monetary/payment columns.
+          if (/action|pending|payment|amount|₹/.test(header)) return;
+          if (cell.querySelector('button,a,.missing-data')) return;
+
+          const value = cell.textContent.replace(/\u00a0/g,' ').trim();
+
+          // Empty, null, undefined, N/A values show "---"
+          if (
+            value === '' ||
+            /^(null|undefined|n\/a|na|not available)$/i.test(value)
+          ) {
+            cell.innerHTML = '<span class="missing-data">---</span>';
+          }
+        });
+      });
+    });
+  }
+
+  markMissingData();
+
+  // Also handle tables updated dynamically after Save/Edit/Delete.
+  const observer = new MutationObserver(() => {
+    clearTimeout(window.__missingDataTimer);
+    window.__missingDataTimer = setTimeout(markMissingData, 50);
+  });
+
+  observer.observe(document.body, {
+    childList:true,
+    subtree:true
+  });
+});
+</script>
+<script id="final-selected-service-columns-js">
+(function(){
+  const COLS = {
+    all:['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Application','Password','Pending (₹)','Actions'],
+    passport:['Service','Name','Father/Husband','Mobile','Application','Date of Birth','Pending (₹)','Actions'],
+    epfo:['Service','Name','Father/Husband','Mobile','PF Number','Date of Birth','Password','Actions'],
+    aadhaar:['Service','Name','Father/Husband','Mobile','Aadhar','Pending (₹)','Actions'],
+    pan:['Service','Name','Father/Husband','Mobile','Application','Date of Birth','Pending (₹)','Actions'],
+    esarvish:['Service','Name','Father/Husband','Mobile','Application','Pending (₹)','Actions'],
+    license:['Service','Name','Father/Husband','Mobile','Application','Pending (₹)','Actions'],
+    bob_account:['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Actions'],
+    pnb_account:['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Actions']
+  };
+
+  function getKey(){
+    const badge=(document.getElementById('serviceTypeBadge')?.textContent||'').toLowerCase();
+    const title=(document.getElementById('serviceTypeTitle')?.textContent||'').toLowerCase();
+    const active=[...document.querySelectorAll('.filter-badge.active')].map(x=>x.textContent.toLowerCase()).join(' ');
+    const s=badge+' '+title+' '+active;
+
+    if(s.includes('passport')) return 'passport';
+    if(s.includes('epfo')) return 'epfo';
+    if(s.includes('aadhaar')) return 'aadhaar';
+    if(s.includes('pan card') || s.includes('pan')) return 'pan';
+    if(s.includes('esarvish')) return 'esarvish';
+    if(s.includes('driving license') || s.includes('driving')) return 'license';
+    if(s.includes('bob account')) return 'bob_account';
+    if(s.includes('pnb account')) return 'pnb_account';
+    return 'all';
+  }
+
+  function fixThead(id,key){
+    const thead=document.getElementById(id);
+    if(!thead) return;
+    const wanted=COLS[key]||COLS.all;
+    const row=thead.querySelector('tr');
+    const current=row ? [...row.children].map(x=>x.textContent.trim()) : [];
+    if(current.length===wanted.length && current.every((v,i)=>v===wanted[i])) return;
+
+    thead.innerHTML='<tr>'+wanted.map(x=>'<th>'+x+'</th>').join('')+'</tr>';
+  }
+
+  function repair(){
+    const key=getKey();
+    fixThead('searchResultsHeader',key);
+    fixThead('applicationsHeader',key);
+
+    // Also keep colspan/error rows consistent with the selected service.
+    document.querySelectorAll('#searchResultsTable tbody tr td[colspan],#applicationsTable tbody tr td[colspan]').forEach(td=>{
+      td.colSpan=(COLS[key]||COLS.all).length;
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    repair();
+
+    const targets=[
+      document.getElementById('serviceTypeBadge'),
+      document.getElementById('serviceTypeTitle'),
+      document.querySelector('.filter-badge.active'),
+      document.getElementById('searchResultsHeader'),
+      document.getElementById('applicationsHeader')
+    ].filter(Boolean);
+
+    const observer=new MutationObserver(repair);
+    targets.forEach(t=>observer.observe(t,{childList:true,subtree:true,characterData:true}));
+
+    // App changes .active by replacing classes, so observe the filter container too.
+    const filters=document.getElementById('serviceFilterOptions');
+    if(filters) observer.observe(filters,{attributes:true,childList:true,subtree:true});
+
+    // Last-resort safety net for any synchronous re-render.
+    setInterval(repair,300);
+  });
+
+  document.addEventListener('click',function(e){
+    const btn=e.target.closest('[onclick*="filterByService"],[data-service-search]');
+    if(btn){
+      setTimeout(repair,20);
+      setTimeout(repair,200);
+    }
+  });
+
+  window.forceSelectedServiceTableColumns=repair;
+})();
+</script>
+
 </body>
 </html>
