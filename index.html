@@ -1323,7 +1323,8 @@ if (window.pdfjsLib) {
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Aadhar Number</label>
-                <input type="text" class="form-control" id="aadhaarNumber" placeholder="1234 5678 9012" maxlength="14" required>
+                <input type="text" class="form-control" id="aadhaarNumber" placeholder="1234 5678 9012" maxlength="14" required inputmode="numeric" autocomplete="off">
+                <div id="aadhaarValidationMessage" class="form-text mt-1">Enter 12 digits to validate format and checksum.</div>
               </div>
             </div>
             <input type="hidden" id="aadhaarId">
@@ -1521,7 +1522,8 @@ if (window.pdfjsLib) {
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">Aadhar Number</label>
-                <input type="text" class="form-control" id="accountAadhar" placeholder="1234 5678 9012" maxlength="14">
+                <input type="text" class="form-control" id="accountAadhar" placeholder="1234 5678 9012" maxlength="14" inputmode="numeric" autocomplete="off">
+                <div id="accountAadhaarValidationMessage" class="form-text mt-1">Enter 12 digits to validate format and checksum.</div>
               </div>
             </div>
             <div class="row mb-3">
@@ -1569,7 +1571,8 @@ if (window.pdfjsLib) {
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">Aadhar Number</label>
-                <input type="text" class="form-control" id="bobAccountAadhar" placeholder="1234 5678 9012" maxlength="14">
+                <input type="text" class="form-control" id="bobAccountAadhar" placeholder="1234 5678 9012" maxlength="14" inputmode="numeric" autocomplete="off">
+                <div id="bobAccountAadhaarValidationMessage" class="form-text mt-1">Enter 12 digits to validate format and checksum.</div>
               </div>
             </div>
             <div class="row mb-3">
@@ -1970,6 +1973,48 @@ if (window.pdfjsLib) {
         }, 5000);
       }
 
+      // Aadhaar format + Verhoeff checksum validation (local only; does NOT verify UIDAI issuance)
+      const verhoeffD = [
+        [0,1,2,3,4,5,6,7,8,9],[1,2,3,4,0,6,7,8,9,5],[2,3,4,0,1,7,8,9,5,6],[3,4,0,1,2,8,9,5,6,7],[4,0,1,2,3,9,5,6,7,8],[5,9,8,7,6,0,4,3,2,1],[6,5,9,8,7,1,0,4,3,2],[7,6,5,9,8,2,1,0,4,3],[8,7,6,5,9,3,2,1,0,4],[9,8,7,6,5,4,3,2,1,0]
+      ];
+      const verhoeffP = [
+        [0,1,2,3,4,5,6,7,8,9],[1,5,7,6,2,8,3,0,9,4],[5,8,0,3,7,9,6,1,4,2],[8,9,1,6,0,4,3,5,2,7],[9,4,5,3,1,2,6,8,7,0],[4,2,8,6,5,7,3,9,0,1],[2,7,9,3,8,0,6,4,1,5],[7,0,4,6,9,1,3,2,5,8]
+      ];
+      function isValidAadhaarChecksum(value) {
+        const digits = String(value).replace(/\D/g, '');
+        if (!/^\d{12}$/.test(digits)) return false;
+        let c = 0;
+        const reversed = digits.split('').reverse();
+        for (let i = 0; i < reversed.length; i++) c = verhoeffD[c][verhoeffP[i % 8][Number(reversed[i])]];
+        return c === 0;
+      }
+      function updateAadhaarValidation(value) {
+        const msg = document.getElementById('aadhaarValidationMessage');
+        const input = document.getElementById('aadhaarNumber');
+        if (!msg || !input) return;
+        const digits = String(value || '').replace(/\D/g, '');
+        input.classList.remove('is-valid','is-invalid');
+        if (!digits.length) {
+          msg.className = 'form-text mt-1';
+          msg.textContent = 'Enter 12 digits to validate format and checksum.';
+          return;
+        }
+        if (digits.length < 12) {
+          msg.className = 'form-text mt-1 text-muted';
+          msg.textContent = `Enter ${12 - digits.length} more digit(s).`;
+          return;
+        }
+        if (isValidAadhaarChecksum(digits)) {
+          input.classList.add('is-valid');
+          msg.className = 'form-text mt-1 text-success fw-semibold';
+          msg.textContent = '✓ Aadhaar number format/checksum is valid.';
+        } else {
+          input.classList.add('is-invalid');
+          msg.className = 'form-text mt-1 text-danger fw-semibold';
+          msg.textContent = '✗ Aadhaar number is invalid (format/checksum).';
+        }
+      }
+
       // Format functions
       function formatAadhar(aadhar) {
         if (!aadhar) return '';
@@ -2354,6 +2399,7 @@ if (window.pdfjsLib) {
                 document.getElementById('bobAccountFatherName').value = cust.fatherName || '';
                 document.getElementById('bobAccountMobile').value = cust.mobile || '';
                 document.getElementById('bobAccountAadhar').value = formatAadhar(cust.aadhar) || '';
+                updateBOBAadhaarValidation(document.getElementById('bobAccountAadhar').value);
                 document.getElementById('bobAccountNumber').value = formatAccount(cust.account) || '';
                 bobAccountModal.show();
                 break;
@@ -2378,6 +2424,13 @@ if (window.pdfjsLib) {
         }
         if (accountNumber.length !== 14) {
           showAlert('Account number must be exactly 14 digits', 'danger');
+          return;
+        }
+
+        const bobAadhaar = document.getElementById('bobAccountAadhar').value.replace(/\D/g, '');
+        if (bobAadhaar && !isValidAadhaarChecksum(bobAadhaar)) {
+          updateBOBAadhaarValidation(bobAadhaar);
+          showAlert('Aadhaar number is invalid. Please check the 12-digit number.', 'danger');
           return;
         }
 
@@ -2462,14 +2515,75 @@ if (window.pdfjsLib) {
           value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
         }
         e.target.value = value.substring(0, 14);
+        updateAadhaarValidation(e.target.value);
       });
+
+      function updatePNBAadhaarValidation(value) {
+        const msg = document.getElementById('accountAadhaarValidationMessage');
+        const input = document.getElementById('accountAadhar');
+        if (!msg || !input) return;
+        const digits = String(value || '').replace(/\D/g, '');
+        input.classList.remove('is-valid','is-invalid');
+        if (!digits.length) {
+          msg.className = 'form-text mt-1';
+          msg.textContent = 'Enter 12 digits to validate format and checksum.';
+          return;
+        }
+        if (digits.length < 12) {
+          msg.className = 'form-text mt-1 text-muted';
+          msg.textContent = `Enter ${12 - digits.length} more digit(s).`;
+          return;
+        }
+        if (isValidAadhaarChecksum(digits)) {
+          input.classList.add('is-valid');
+          msg.className = 'form-text mt-1 text-success fw-semibold';
+          msg.textContent = '✓ Aadhaar number format/checksum is valid.';
+        } else {
+          input.classList.add('is-invalid');
+          msg.className = 'form-text mt-1 text-danger fw-semibold';
+          msg.textContent = '✗ Aadhaar number is invalid (format/checksum).';
+        }
+      }
 
       document.getElementById('accountAadhar')?.addEventListener('input', function(e) {
         let value = e.target.value.replace(/\s+/g, '').replace(/\D/g, '');
-        if (value.length > 0) {
-          value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
-        }
+        if (value.length > 0) value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
         e.target.value = value.substring(0, 14);
+        updatePNBAadhaarValidation(e.target.value);
+      });
+
+      function updateBOBAadhaarValidation(value) {
+        const msg = document.getElementById('bobAccountAadhaarValidationMessage');
+        const input = document.getElementById('bobAccountAadhar');
+        if (!msg || !input) return;
+        const digits = String(value || '').replace(/\D/g, '');
+        input.classList.remove('is-valid','is-invalid');
+        if (!digits.length) {
+          msg.className = 'form-text mt-1';
+          msg.textContent = 'Enter 12 digits to validate format and checksum.';
+          return;
+        }
+        if (digits.length < 12) {
+          msg.className = 'form-text mt-1 text-muted';
+          msg.textContent = `Enter ${12 - digits.length} more digit(s).`;
+          return;
+        }
+        if (isValidAadhaarChecksum(digits)) {
+          input.classList.add('is-valid');
+          msg.className = 'form-text mt-1 text-success fw-semibold';
+          msg.textContent = '✓ Aadhaar number format/checksum is valid.';
+        } else {
+          input.classList.add('is-invalid');
+          msg.className = 'form-text mt-1 text-danger fw-semibold';
+          msg.textContent = '✗ Aadhaar number is invalid (format/checksum).';
+        }
+      }
+
+      document.getElementById('bobAccountAadhar')?.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s+/g, '').replace(/\D/g, '').substring(0, 12);
+        if (value.length > 0) value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
+        e.target.value = value;
+        updateBOBAadhaarValidation(value);
       });
 
       document.getElementById('accountNumber')?.addEventListener('input', function(e) {
@@ -2594,6 +2708,12 @@ if (window.pdfjsLib) {
         
         if (aadhar.length !== 12) {
           showAlert('Aadhar number must be exactly 12 digits', 'danger');
+          return;
+        }
+
+        if (!isValidAadhaarChecksum(aadhar)) {
+          updateAadhaarValidation(aadhar);
+          showAlert('Aadhaar number is invalid. Please check the 12-digit number.', 'danger');
           return;
         }
         
@@ -2729,6 +2849,13 @@ if (window.pdfjsLib) {
         
         if (accountNumber.length !== 16) {
           showAlert('Account number must be exactly 16 digits', 'danger');
+          return;
+        }
+
+        const pnbAadhaar = document.getElementById('accountAadhar').value.replace(/\D/g, '');
+        if (pnbAadhaar && !isValidAadhaarChecksum(pnbAadhaar)) {
+          updatePNBAadhaarValidation(pnbAadhaar);
+          showAlert('Aadhaar number is invalid. Please check the 12-digit number.', 'danger');
           return;
         }
         
