@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cors = require("cors");
 
@@ -6,7 +5,6 @@ const app = express();
 
 const PORT = process.env.PORT || 10000;
 
-// PayU Settings (Render Environment Variables से आएंगी)
 const PAYU_MODE = (process.env.PAYU_MODE || "UAT").toUpperCase();
 const PAYU_CLIENT_ID = process.env.PAYU_CLIENT_ID;
 const PAYU_CLIENT_SECRET = process.env.PAYU_CLIENT_SECRET;
@@ -26,7 +24,6 @@ app.use(
   })
 );
 
-// टेस्ट करने के लिए
 app.get("/", (req, res) => {
   res.json({
     ok: true,
@@ -39,9 +36,11 @@ app.get("/health", (req, res) => {
   res.json({ ok: true });
 });
 
-/*
-  PayU से Access Token लेना
-*/
+
+/* ================================
+   PAYU ACCESS TOKEN
+================================ */
+
 async function getPayUToken() {
   if (!PAYU_CLIENT_ID || !PAYU_CLIENT_SECRET) {
     throw new Error(
@@ -63,10 +62,12 @@ async function getPayUToken() {
 
   const response = await fetch(TOKEN_URL, {
     method: "POST",
+
     headers: {
       Accept: "application/json",
       "Content-Type": "application/x-www-form-urlencoded",
     },
+
     body: form.toString(),
   });
 
@@ -86,11 +87,13 @@ async function getPayUToken() {
 }
 
 
-/*
-  BANK ACCOUNT VERIFICATION
-*/
+/* ================================
+   BANK ACCOUNT VERIFICATION
+================================ */
+
 app.post("/api/verify-bank", async (req, res) => {
   try {
+
     const {
       account_number,
       ifsc,
@@ -99,18 +102,30 @@ app.post("/api/verify-bank", async (req, res) => {
       leniency = "Medium",
     } = req.body || {};
 
+
+    /* Account Number */
+
     const account = String(account_number || "")
       .replace(/\s+/g, "")
       .replace(/[^0-9]/g, "");
+
+
+    /* IFSC */
 
     const cleanIfsc = String(ifsc || "")
       .replace(/\s+/g, "")
       .toUpperCase();
 
+
+    /* Name optional */
+
     const holderName = String(name || "").trim();
 
 
-    // Account Number Validation
+    /* ============================
+       ACCOUNT VALIDATION
+    ============================ */
+
     if (!/^\d{6,25}$/.test(account)) {
       return res.status(400).json({
         ok: false,
@@ -119,7 +134,10 @@ app.post("/api/verify-bank", async (req, res) => {
     }
 
 
-    // IFSC Validation
+    /* ============================
+       IFSC VALIDATION
+    ============================ */
+
     if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(cleanIfsc)) {
       return res.status(400).json({
         ok: false,
@@ -128,22 +146,32 @@ app.post("/api/verify-bank", async (req, res) => {
     }
 
 
-    // Name Validation
-    if (holderName.length < 2) {
+    /* ============================
+       NAME VALIDATION
+
+       Name खाली हो सकता है।
+       BOB में सिर्फ Account Number
+       से verification की जा सकती है।
+    ============================ */
+
+    if (holderName && holderName.length < 2) {
       return res.status(400).json({
         ok: false,
-        error: "Account holder name is required.",
+        error: "Invalid account holder name.",
       });
     }
 
 
-    // PayU Token
+    /* ============================
+       GET PAYU TOKEN
+    ============================ */
+
     const accessToken = await getPayUToken();
 
 
-    /*
-      PayU Bank Verification API
-    */
+    /* ============================
+       PAYU VERIFY URL
+    ============================ */
 
     const VERIFY_URL =
       PAYU_MODE === "PRODUCTION"
@@ -151,64 +179,130 @@ app.post("/api/verify-bank", async (req, res) => {
         : "https://uat-onepayuonboarding.payu.in/dvs/bank_accounts/acc_verification";
 
 
+    /* ============================
+       REQUEST BODY
+    ============================ */
+
+    const requestBody = {
+      account_number: account,
+      ifsc: cleanIfsc,
+
+      // Name खाली होने पर name नहीं भेजेंगे
+      ...(holderName
+        ? {
+            name: holderName,
+          }
+        : {}),
+
+      // Name नहीं है तो name matching बंद
+      name_match_required: holderName
+        ? Boolean(name_match_required)
+        : false,
+
+      leniency: leniency,
+    };
+
+
+    /* ============================
+       PAYU API CALL
+    ============================ */
+
     const payuResponse = await fetch(VERIFY_URL, {
       method: "POST",
 
       headers: {
         "Content-Type": "application/json",
+
         Authorization: `Bearer ${accessToken}`,
       },
 
-      body: JSON.stringify({
-        account_number: account,
-        ifsc: cleanIfsc,
-        name: holderName,
-        name_match_required: Boolean(name_match_required),
-        leniency: leniency,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
 
-    const data = await payuResponse.json().catch(() => ({}));
+    const data = await payuResponse
+      .json()
+      .catch(() => ({}));
 
+
+    /* ============================
+       PAYU ERROR
+    ============================ */
 
     if (!payuResponse.ok) {
-      console.error("PayU Verification Error:", data);
+
+      console.error(
+        "PayU Verification Error:",
+        data
+      );
 
       return res.status(payuResponse.status).json({
         ok: false,
+
         error:
           data.message ||
           data.error ||
           "PayU bank verification failed.",
+
         details: data,
       });
     }
 
 
+    /* ============================
+       RESPONSE
+    ============================ */
+
     const result = data.result || data;
 
 
     return res.json({
+
       ok: true,
+
+
+      /* Account verified */
 
       verified:
         result.bankTxnStatus === true ||
         result.accountStatus === "ACTIVE",
 
+
+      /* Account Status */
+
       accountStatus:
         result.accountStatus || null,
 
+
+      /* Account Holder Name */
+
       accountName:
-        result.accountName || null,
+        result.accountName ||
+        result.account_holder_name ||
+        result.name ||
+        null,
+
+
+      /* Bank Response */
 
       bankResponse:
-        result.bankResponse || null,
+        result.bankResponse ||
+        result.message ||
+        null,
+
+
+      /* PayU Request ID */
 
       payuRequestId:
-        data.payuRequestId || null,
+        data.payuRequestId ||
+        data.requestId ||
+        null,
+
+
+      /* Complete response */
 
       raw: data,
+
     });
 
   } catch (error) {
@@ -218,22 +312,30 @@ app.post("/api/verify-bank", async (req, res) => {
       error.message
     );
 
+
     return res.status(500).json({
+
       ok: false,
+
       error:
         error.message ||
         "Internal server error.",
+
     });
+
   }
+
 });
 
 
-/*
-  Start Server
-*/
+/* ================================
+   START SERVER
+================================ */
 
 app.listen(PORT, "0.0.0.0", () => {
+
   console.log(
     `PayU Bank Verification Backend running on port ${PORT}`
   );
+
 });
