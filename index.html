@@ -846,14 +846,6 @@ if (window.pdfjsLib) {
 #applicationsTable thead th { white-space: nowrap !important; }
 </style>
 
-
-<style id="payu-bank-verification-css">
-.bank-verify-btn{margin-top:8px;padding:8px 14px;border:0;border-radius:6px;background:#0b6b3a;color:#fff;font-weight:600;cursor:pointer}
-.bank-verify-btn:disabled{opacity:.65;cursor:not-allowed}
-.bank-verify-result{margin-top:7px;font-size:.9rem;font-weight:600}
-.bank-verify-result.ok{color:#087a35}.bank-verify-result.bad{color:#b42318}.bank-verify-result.wait{color:#175cd3}
-</style>
-
 </head>
 <body>
   <!-- Login Modal -->
@@ -1539,11 +1531,6 @@ if (window.pdfjsLib) {
                 <label class="form-label fw-bold required-field">Account Number</label>
                 <input type="text" class="form-control account-format" id="accountNumber" placeholder="Account Number" maxlength="22" required>
               </div>
-<div id="payu-bank-verification-widget" style="margin-top:10px">
-  <button type="button" id="payuVerifyBankBtn" class="bank-verify-btn" onclick="verifyBankAccountPayU()">Verify Bank Account</button>
-  <div id="payuBankVerifyResult" class="bank-verify-result"></div>
-</div>
-
             </div>
             <input type="hidden" id="accountId">
           </form>
@@ -1592,11 +1579,6 @@ if (window.pdfjsLib) {
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Account Number</label>
                 <input type="text" class="form-control account-format" id="bobAccountNumber" placeholder="Account Number" maxlength="22" required>
-                <div id="bob-bank-verification-widget" style="margin-top:10px">
-                  <button type="button" id="bobVerifyBankBtn" class="bank-verify-btn" onclick="verifyBOBAccountPayU()">Verify & Get Account Name</button>
-                  <div id="bobBankVerifyResult" class="bank-verify-result"></div>
-                  <small class="form-text text-muted">Account number डालें। Verification के बाद उपलब्ध होने पर Account Holder Name अपने-आप भर दिया जाएगा।</small>
-                </div>
               </div>
             </div>
             <input type="hidden" id="bobAccountId">
@@ -4766,172 +4748,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
   window.forceSelectedServiceTableColumns=repair;
 })();
-</script>
-
-
-<script id="payu-bank-verification-js">
-/*
- SECURITY: Put your deployed backend URL below.
- Never put PayU Client Secret, Key or Salt in this HTML file.
-*/
-const PAYU_BACKEND_URL = "https://bob-custumar.onrender.com";
-
-function payuEscape(v){
-  return String(v ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[c]));
-}
-
-function payuFindInput(keywords){
-  const all=[...document.querySelectorAll("input")];
-  return all.find(el=>{
-    const s=((el.id||"")+" "+(el.name||"")+" "+(el.placeholder||"")).toLowerCase();
-    return keywords.some(k=>s.includes(k));
-  });
-}
-
-function payuGetValue(keywords){
-  const el=payuFindInput(keywords);
-  return el ? el.value.trim() : "";
-}
-
-function payuValidIFSC(v){ return /^[A-Z]{4}0[A-Z0-9]{6}$/.test(String(v).trim().toUpperCase()); }
-
-async function verifyBankAccountPayU(){
-  const account=payuGetValue(["account","ac no","account number"]);
-  const ifsc=payuGetValue(["ifsc"]);
-  const name=payuGetValue(["account holder","holder name","customer name","full name","name"]);
-  const box=document.getElementById("payuBankVerifyResult");
-  const btn=document.getElementById("payuVerifyBankBtn");
-
-  if(!/^[0-9]{6,25}$/.test(account)){
-    box.className="bank-verify-result bad"; box.textContent="✗ सही Account Number डालें।"; return;
-  }
-  if(!payuValidIFSC(ifsc)){
-    box.className="bank-verify-result bad"; box.textContent="✗ सही 11-character IFSC Code डालें।"; return;
-  }
-  if(!name || name.length<2){
-    box.className="bank-verify-result bad"; box.textContent="✗ Account Holder Name डालें।"; return;
-  }
-  if(PAYU_BACKEND_URL.includes("YOUR-BACKEND")){
-    box.className="bank-verify-result bad";
-    box.textContent="✗ पहले Backend URL सेट करना होगा।";
-    return;
-  }
-
-  btn.disabled=true; btn.textContent="Verifying...";
-  box.className="bank-verify-result wait"; box.textContent="Bank account verify किया जा रहा है...";
-
-  try{
-    const r=await fetch(PAYU_BACKEND_URL+"/api/verify-bank",{
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        account_number:account,
-        ifsc:ifsc.toUpperCase(),
-        name:name,
-        name_match_required:true,
-        leniency:"Medium"
-      })
-    });
-    const d=await r.json();
-    if(!r.ok || !d.ok) throw new Error(d.error||"Verification failed");
-
-    if(d.verified){
-      box.className="bank-verify-result ok";
-      box.innerHTML="✓ Bank Account Verified" +
-        (d.accountStatus ? " | Status: "+payuEscape(d.accountStatus) : "") +
-        (d.accountName ? " | Name: "+payuEscape(d.accountName) : "");
-    }else{
-      box.className="bank-verify-result bad";
-      box.textContent="✗ Verification unsuccessful: "+(d.bankResponse||d.accountStatus||"Details check करें");
-    }
-  }catch(e){
-    box.className="bank-verify-result bad";
-    box.textContent="✗ "+e.message;
-  }finally{
-    btn.disabled=false; btn.textContent="Verify Bank Account";
-  }
-}
-
-/*
- BOB Account Name lookup:
- IFSC is kept inside the code and is not displayed on the website.
-*/
-const BOB_FIXED_IFSC = "BARB0MANGLA";
-
-async function verifyBOBAccountPayU(){
-  const accountEl = document.getElementById("bobAccountNumber");
-  const nameEl = document.getElementById("bobAccountName");
-  const box = document.getElementById("bobBankVerifyResult");
-  const btn = document.getElementById("bobVerifyBankBtn");
-  // Remove spaces, hyphens and any accidental formatting before validation.
-  const account = accountEl
-    ? String(accountEl.value || "").replace(/[^0-9]/g, "")
-    : "";
-
-  if(account.length < 6 || account.length > 25){
-    box.className="bank-verify-result bad";
-    box.textContent="✗ सही Account Number डालें।";
-    return;
-  }
-
-  // Keep the cleaned account number in the input as well.
-  if(accountEl) accountEl.value = account;
-
-  btn.disabled=true;
-  btn.textContent="Checking...";
-  box.className="bank-verify-result wait";
-  box.textContent="Account Holder Name खोजा जा रहा है...";
-
-  try{
-    const r = await fetch(PAYU_BACKEND_URL + "/api/verify-bank", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        account_number:account,
-        ifsc:BOB_FIXED_IFSC,
-        name:"",
-        name_match_required:false,
-        leniency:"Medium"
-      })
-    });
-
-    const d = await r.json().catch(()=>({}));
-    if(!r.ok || !d.ok) throw new Error(d.error || "Verification failed");
-
-    if(d.accountName){
-      nameEl.value = String(d.accountName).toUpperCase();
-      nameEl.dispatchEvent(new Event("input", {bubbles:true}));
-      box.className="bank-verify-result ok";
-      box.innerHTML="✓ Account verified | Name: " + payuEscape(d.accountName) +
-        (d.accountStatus ? " | Status: " + payuEscape(d.accountStatus) : "");
-    }else{
-      box.className="bank-verify-result bad";
-      box.textContent="✗ Verification response में Account Holder Name उपलब्ध नहीं मिला।";
-    }
-  }catch(e){
-    box.className="bank-verify-result bad";
-    box.textContent="✗ " + (e.message || "Verification failed");
-  }finally{
-    btn.disabled=false;
-    btn.textContent="Verify & Get Account Name";
-  }
-}
-
-// Automatically check when the user finishes entering the account number and leaves the field.
-document.addEventListener("DOMContentLoaded", function(){
-  const bobAccount = document.getElementById("bobAccountNumber");
-  if(bobAccount){
-    bobAccount.addEventListener("blur", function(){
-      const account = String(bobAccount.value || "").replace(/[^0-9]/g, "");
-      if(account.length >= 6 && account.length <= 25){
-        bobAccount.value = account;
-        verifyBOBAccountPayU();
-      }
-    });
-  }
-});
-
 </script>
 
 </body>
