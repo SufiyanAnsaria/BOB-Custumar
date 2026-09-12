@@ -4864,13 +4864,19 @@ async function verifyBOBAccountPayU(){
   const nameEl = document.getElementById("bobAccountName");
   const box = document.getElementById("bobBankVerifyResult");
   const btn = document.getElementById("bobVerifyBankBtn");
-  const account = accountEl ? accountEl.value.trim() : "";
+  // Remove spaces, hyphens and any accidental formatting before validation.
+  const account = accountEl
+    ? String(accountEl.value || "").replace(/[^0-9]/g, "")
+    : "";
 
-  if(!/^[0-9]{6,25}$/.test(account)){
+  if(account.length < 6 || account.length > 25){
     box.className="bank-verify-result bad";
     box.textContent="✗ सही Account Number डालें।";
     return;
   }
+
+  // Keep the cleaned account number in the input as well.
+  if(accountEl) accountEl.value = account;
 
   btn.disabled=true;
   btn.textContent="Checking...";
@@ -4917,8 +4923,9 @@ document.addEventListener("DOMContentLoaded", function(){
   const bobAccount = document.getElementById("bobAccountNumber");
   if(bobAccount){
     bobAccount.addEventListener("blur", function(){
-      const account = bobAccount.value.trim();
-      if(/^[0-9]{6,25}$/.test(account)){
+      const account = String(bobAccount.value || "").replace(/[^0-9]/g, "");
+      if(account.length >= 6 && account.length <= 25){
+        bobAccount.value = account;
         verifyBOBAccountPayU();
       }
     });
