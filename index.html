@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <title>Bank of Baroda - Shoaib CSC Customer Management</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -320,6 +323,17 @@
       white-space: nowrap;
     }
 
+    .customer-photo-thumb {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 7px;
+      border: 1px solid #d9e2ea;
+      background: #f5f7fa;
+      cursor: pointer;
+    }
+    .customer-photo-thumb:hover { transform: scale(1.08); }
+
     .search-filters {
       background: #f8f9fa;
       padding: 20px;
@@ -386,6 +400,19 @@
 
     .btn-sm i {
       font-size: 0.9rem;
+    }
+    .whatsapp-btn {
+      background-color: #25D366;
+      border-color: #25D366;
+      color: #fff;
+    }
+    .whatsapp-btn:hover {
+      background-color: #1ebe5d;
+      border-color: #1ebe5d;
+      color: #fff;
+    }
+    #bobAccountPhotoPreview {
+      background: #fff;
     }
 
     .input-group {
@@ -693,6 +720,15 @@
 
   </style>
 
+<style id="passport-photo-preview-style">
+/* Passport-size photo preview */
+.passport-preview-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;}
+.passport-preview-label{font-weight:700;color:#0066A1;margin-bottom:10px;}
+.passport-preview-image{width:600px;height:780px;max-width:92vw;max-height:82vh;object-fit:contain;image-rendering:auto;border:2px solid #d6dce3;border-radius:6px;background:#fff;display:block;cursor:zoom-in;box-shadow:0 8px 30px rgba(0,0,0,.18);}
+.customer-photo-large-modal .modal-body{min-height:70vh;display:flex;align-items:center;justify-content:center;}
+@media(max-width:576px){.passport-preview-image{width:360px;height:470px;max-width:90vw;max-height:72vh;}}
+</style>
+
 <style id="final-bob-header-logo-fix">
 /* Final: white header, large logo integrated directly into header */
 .navbar {
@@ -797,15 +833,7 @@ header .site-subtitle {
 
 
 <!-- Automatic Slip/Form Reader Libraries -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>
-if (window.pdfjsLib) {
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-}
-</script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<!-- Heavy PDF/XLSX libraries are lazy-loaded only when their features are used. -->
 
 
 <style id="missing-data-display-style">
@@ -844,6 +872,145 @@ if (window.pdfjsLib) {
 <style id="final-selected-service-columns-css">
 #searchResultsTable thead th,
 #applicationsTable thead th { white-space: nowrap !important; }
+</style>
+
+
+<style id="stylish-bob-account-modal">
+/* Modern BOB Account Customer form */
+#bobAccountModal .modal-dialog{
+  max-width: 860px;
+}
+#bobAccountModal .modal-content{
+  border:0;
+  border-radius:20px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:0 24px 70px rgba(0,0,0,.28);
+}
+#bobAccountModal .modal-header{
+  min-height:72px;
+  padding:18px 24px;
+  border:0;
+  border-bottom:3px solid #ff5a00;
+  background:linear-gradient(135deg,#0067a5 0%,#00507f 100%);
+  color:#fff;
+}
+#bobAccountModal .modal-title{
+  font-size:1.22rem;
+  font-weight:800;
+  letter-spacing:.2px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+#bobAccountModal .modal-title i{
+  width:40px;
+  height:40px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  background:rgba(255,255,255,.16);
+}
+#bobAccountModal .btn-close{
+  opacity:1;
+  filter:brightness(0) invert(1);
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  transition:.2s;
+}
+#bobAccountModal .btn-close:hover{
+  background:rgba(255,255,255,.16);
+  transform:rotate(90deg);
+}
+#bobAccountModal .modal-body{
+  padding:26px 28px 24px;
+  background:linear-gradient(180deg,#f8fbff 0%,#fff 34%);
+}
+#bobAccountModal .modal-body > h5,
+#bobAccountModal .modal-body .section-title{
+  font-weight:800;
+  color:#12304a;
+}
+#bobAccountModal .modal-body label{
+  color:#172b43;
+  font-weight:700;
+  margin-bottom:8px;
+}
+#bobAccountModal .form-control,
+#bobAccountModal .form-select,
+#bobAccountModal .input-group-text{
+  min-height:46px;
+  border:1px solid #d6e0ea;
+  border-radius:11px;
+  background:#fff;
+  transition:border-color .18s,box-shadow .18s,transform .18s;
+}
+#bobAccountModal .form-control{
+  padding:10px 14px;
+}
+#bobAccountModal .form-control:focus{
+  border-color:#1683c5;
+  box-shadow:0 0 0 4px rgba(22,131,197,.12);
+}
+#bobAccountModal .form-control::placeholder{
+  color:#8b97a5;
+}
+#bobAccountModal .form-text{
+  color:#6b7280;
+  font-size:.82rem;
+  line-height:1.45;
+}
+#bobAccountModal .required-field::after{
+  color:#ff4d22;
+}
+#bobAccountModal #bobAccountPhoto{
+  padding:5px;
+}
+#bobAccountModal #bobAccountPhotoPreview{
+  display:block;
+  width:120px !important;
+  height:150px !important;
+  object-fit:cover;
+  object-position:center;
+  border:2px solid #dbe7f1 !important;
+  border-radius:14px !important;
+  margin-top:12px !important;
+  background:#f5f8fb;
+  box-shadow:0 8px 22px rgba(0,0,0,.10);
+}
+#bobAccountModal .modal-footer{
+  padding:16px 24px;
+  border-top:1px solid #e6edf3;
+  background:#fff;
+  gap:10px;
+}
+#bobAccountModal .modal-footer .btn{
+  min-height:44px;
+  padding:9px 20px;
+  border-radius:11px;
+  font-weight:700;
+  border:0;
+  transition:.18s;
+}
+#bobAccountModal .modal-footer .btn-secondary{
+  background:#687582;
+}
+#bobAccountModal .modal-footer .btn-primary,
+#bobAccountModal .modal-footer .btn-pnb-primary{
+  background:linear-gradient(135deg,#ff6500,#f04400);
+  box-shadow:0 7px 18px rgba(245,76,0,.24);
+}
+#bobAccountModal .modal-footer .btn:hover{
+  transform:translateY(-1px);
+}
+@media(max-width:767px){
+  #bobAccountModal .modal-body{padding:20px 16px;}
+  #bobAccountModal .modal-header{padding:15px 17px;}
+  #bobAccountModal .modal-footer{padding:13px 16px;}
+  #bobAccountModal .modal-dialog{margin:10px;}
+}
 </style>
 
 </head>
@@ -946,6 +1113,22 @@ if (window.pdfjsLib) {
     </div>
 
     <!-- Service Stats Cards -->
+    <div class="card mb-3 border-0 shadow-sm" id="firebaseStorageInfoCard">
+      <div class="card-body py-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div>
+            <div class="fw-bold"><i class="fas fa-database me-2"></i>Firebase Data Usage</div>
+            <div class="small text-muted">Approximate customer-data size. Actual Firebase storage usage should be checked in Firebase Console.</div>
+          </div>
+          <div class="text-end">
+            <div><span id="firebaseDataUsed">Calculating...</span> used</div>
+            <div class="small text-muted" id="firebaseDataRemaining">Actual remaining space: Firebase Console</div>
+          </div>
+        </div>
+        <div class="progress mt-2" style="height:8px"><div id="firebaseDataUsageBar" class="progress-bar" role="progressbar" style="width:0%"></div></div>
+      </div>
+    </div>
+
     <div class="service-stats mb-3" id="serviceStats">
       <div class="stat-card">
         <span class="stat-icon"><i class="fas fa-passport"></i></span>
@@ -1325,6 +1508,7 @@ if (window.pdfjsLib) {
                 <label class="form-label fw-bold required-field">Aadhar Number</label>
                 <input type="text" class="form-control" id="aadhaarNumber" placeholder="1234 5678 9012" maxlength="14" required inputmode="numeric" autocomplete="off">
                 <div id="aadhaarValidationMessage" class="form-text mt-1">Enter 12 digits to validate format and checksum.</div>
+                <div id="aadhaarNumberDuplicateStatus" class="duplicate-status small mt-1"></div>
               </div>
             </div>
             <input type="hidden" id="aadhaarId">
@@ -1557,17 +1741,17 @@ if (window.pdfjsLib) {
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Full Name</label>
-                <input type="text" class="form-control uppercase" id="bobAccountName" placeholder="CUSTOMER NAME" required>
+                <input type="text" class="form-control uppercase" id="bobAccountName" placeholder="CUSTOMER NAME" required autocomplete="off">
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">Father/Husband Name</label>
-                <input type="text" class="form-control uppercase" id="bobAccountFatherName" placeholder="FATHER NAME">
+                <input type="text" class="form-control uppercase" id="bobAccountFatherName" placeholder="FATHER NAME" autocomplete="off">
               </div>
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Mobile Number (10 digits)</label>
-                <input type="tel" class="form-control" id="bobAccountMobile" placeholder="Mobile Number" maxlength="10" required>
+                <input type="tel" class="form-control" id="bobAccountMobile" placeholder="6XXXXXXXXX" autocomplete="off" required maxlength="10" minlength="10" inputmode="numeric" pattern="[6-9][0-9]{9}">
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">Aadhar Number</label>
@@ -1578,9 +1762,17 @@ if (window.pdfjsLib) {
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Account Number</label>
-                <input type="text" class="form-control account-format" id="bobAccountNumber" placeholder="Account Number" maxlength="22" required>
+                <input type="text" class="form-control account-format" id="bobAccountNumber" placeholder="14 digit Account Number" autocomplete="off" required maxlength="14" minlength="14" inputmode="numeric" pattern="[0-9]{14}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Customer Photo</label>
+                <input type="file" class="form-control" id="bobAccountPhoto" accept="image/*">
+                <div class="form-text">किसी भी KB की photo चुनें। Save करते समय photo अपने-आप resize/compress होकर 10 KB या उससे कम में save होगी।</div>
+                <div id="bobAccountPhotoStatus" class="small text-muted mt-1"></div>
+                <img id="bobAccountPhotoPreview" src="" alt="Photo preview" class="mt-2 rounded border d-none" style="width:100px;height:100px;object-fit:cover;">
               </div>
             </div>
+            <input type="hidden" id="bobAccountExistingPhoto">
             <input type="hidden" id="bobAccountId">
           </form>
         </div>
@@ -1634,6 +1826,29 @@ if (window.pdfjsLib) {
     </div>
   </div>
 
+  <!-- Customer Photo View Modal -->
+  <div class="modal fade" id="customerPhotoViewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content customer-photo-large-modal">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-camera me-2"></i>Customer Photo — Large Preview</h5>
+          <button type="button" id="customerPhotoCloseBtn" class="btn-close btn-close-white" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <div class="passport-preview-wrap">
+            <div class="passport-preview-label">Passport Size Preview</div>
+            <img id="customerPhotoViewImage" src="" alt="Customer Photo" class="passport-preview-image" title="Click to zoom">
+          </div>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" id="customerPhotoCloseBtnFooter" class="btn btn-secondary">
+            <i class="fas fa-times me-1"></i> Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Bulk Delete Modal -->
   <div class="modal fade" id="bulkDeleteModal" tabindex="-1" aria-labelledby="bulkDeleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -1645,6 +1860,12 @@ if (window.pdfjsLib) {
         <div class="modal-body">
           <p>You are about to delete <span id="deleteCount" class="fw-bold">0</span> customers. This action cannot be undone.</p>
           <p class="text-danger"><i class="fas fa-exclamation-circle me-2"></i>Please confirm you want to permanently delete these records.</p>
+          <div class="mb-2">
+            <label for="bulkDeletePassword" class="form-label fw-bold">Admin Password</label>
+            <input type="password" class="form-control" id="bulkDeletePassword" placeholder="Enter your login password" autocomplete="current-password">
+            <div class="form-text">Your current Firebase login password is required before deletion.</div>
+            <div id="bulkDeletePasswordError" class="text-danger small mt-1 d-none"></div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -1800,13 +2021,41 @@ if (window.pdfjsLib) {
 
   <!-- JavaScript Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <!-- XLSX and FileSaver are loaded on demand to keep startup fast. -->
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
 
   <script>
+    // Performance: load heavy optional libraries only when the user actually needs them.
+    (function(){
+      const pending = Object.create(null);
+      window.loadOptionalScript = function(src, globalName){
+        if (globalName && window[globalName]) return Promise.resolve(window[globalName]);
+        if (pending[src]) return pending[src];
+        pending[src] = new Promise((resolve, reject) => {
+          const existing = document.querySelector('script[data-optional-src="'+src+'"]');
+          if (existing) {
+            existing.addEventListener('load', () => resolve(globalName ? window[globalName] : true), {once:true});
+            existing.addEventListener('error', reject, {once:true});
+            return;
+          }
+          const script = document.createElement('script');
+          script.src = src; script.async = true; script.dataset.optionalSrc = src;
+          script.onload = () => resolve(globalName ? window[globalName] : true);
+          script.onerror = () => { delete pending[src]; reject(new Error('Optional library failed to load.')); };
+          document.head.appendChild(script);
+        });
+        return pending[src];
+      };
+      window.ensureXLSX = () => loadOptionalScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js','XLSX');
+      window.ensureFileSaver = () => loadOptionalScript('https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js','saveAs');
+      window.ensurePdfJs = () => loadOptionalScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js','pdfjsLib').then(lib => {
+        if (window.pdfjsLib) window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        return lib;
+      });
+    })();
+
     // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBQAJym4PgqblkfMY7VKRWEMURG8GJ9vU4",
@@ -1908,6 +2157,8 @@ if (window.pdfjsLib) {
         cancelBulkActionBtn: document.getElementById('cancelBulkActionBtn'),
         finalConfirmDeleteBtn: document.getElementById('finalConfirmDeleteBtn'),
         deleteCount: document.getElementById('deleteCount'),
+        bulkDeletePassword: document.getElementById('bulkDeletePassword'),
+        bulkDeletePasswordError: document.getElementById('bulkDeletePasswordError'),
         alertsContainer: document.getElementById('alertsContainer'),
         exactMatchBtn: document.getElementById('exactMatchBtn'),
         caseSensitiveBtn: document.getElementById('caseSensitiveBtn'),
@@ -1930,10 +2181,120 @@ if (window.pdfjsLib) {
         saveESarvishBtn: document.getElementById('saveESarvishBtn'),
         saveLicenseBtn: document.getElementById('saveLicenseBtn'),
         saveAccountBtn: document.getElementById('saveAccountBtn'),
-        saveBOBAccountBtn: document.getElementById('saveBOBAccountBtn')
+        saveBOBAccountBtn: document.getElementById('saveBOBAccountBtn'),
+        bobAccountPhoto: document.getElementById('bobAccountPhoto'),
+        bobAccountPhotoStatus: document.getElementById('bobAccountPhotoStatus'),
+        bobAccountPhotoPreview: document.getElementById('bobAccountPhotoPreview'),
+        bobAccountExistingPhoto: document.getElementById('bobAccountExistingPhoto')
       };
 
-      // State management
+
+      // BOB Account strict input validation
+      (function initBOBStrictValidation() {
+        const mobileEl = document.getElementById('bobAccountMobile');
+        const accountEl = document.getElementById('bobAccountNumber');
+
+        if (mobileEl) {
+          mobileEl.addEventListener('input', function () {
+            let v = this.value.replace(/\D/g, '').slice(0, 10);
+            // Do not allow mobile numbers beginning with 0-5.
+            if (v.length > 0 && !/[6-9]/.test(v[0])) v = '';
+            this.value = v;
+          });
+        }
+
+        if (accountEl) {
+          accountEl.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '').slice(0, 14);
+          });
+        }
+      })();
+
+
+      // BOB customer name: letters and spaces only — no digits.
+      (function initBOBNameValidation() {
+        const nameEl = document.getElementById('bobAccountName');
+        if (!nameEl) return;
+
+        nameEl.addEventListener('input', function () {
+          // Keep English letters, Devanagari letters, and spaces only.
+          this.value = this.value.replace(/[^\p{L}\s]/gu, '').replace(/\s{2,}/g, ' ');
+        });
+      })();
+      // Strict BOB field validation:
+      // Name/Father-Husband = letters + spaces only.
+      // Mobile = digits only, first digit 6-9, max 10 digits.
+      (function initBOBStrictFieldValidation() {
+        ['bobAccountName', 'bobAccountFatherName'].forEach(function(id) {
+          const el = document.getElementById(id);
+          if (!el) return;
+
+          el.addEventListener('input', function () {
+            this.value = this.value
+              .replace(/[^\p{L}\s]/gu, '')
+              .replace(/\s{2,}/g, ' ');
+          });
+
+          // Block invalid characters BEFORE they enter the field.
+          el.addEventListener('beforeinput', function (e) {
+            if (e.inputType && e.inputType.startsWith('delete')) return;
+            const data = e.data || '';
+            if (data && !/^[\p{L}\s]+$/u.test(data)) {
+              e.preventDefault();
+            }
+          });
+
+          el.addEventListener('keydown', function (e) {
+            if (e.key.length === 1 && !/[\p{L}\s]/u.test(e.key)) {
+              e.preventDefault();
+            }
+          });
+
+          el.addEventListener('paste', function (e) {
+            const text = (e.clipboardData || window.clipboardData).getData('text');
+            if (text && !/^[\p{L}\s]+$/u.test(text)) {
+              e.preventDefault();
+            }
+          });
+
+          el.addEventListener('drop', function (e) {
+            const text = e.dataTransfer?.getData('text') || '';
+            if (text && !/^[\p{L}\s]+$/u.test(text)) {
+              e.preventDefault();
+            }
+          });
+        });
+
+        const mobileEl = document.getElementById('bobAccountMobile');
+        if (mobileEl) {
+          mobileEl.addEventListener('input', function () {
+            let v = this.value.replace(/\D/g, '').slice(0, 10);
+            if (v.length && !/^[6-9]/.test(v)) v = '';
+            this.value = v;
+          });
+
+          mobileEl.addEventListener('keydown', function (e) {
+            if (e.key.length === 1 && !/\d/.test(e.key)) {
+              e.preventDefault();
+            }
+          });
+        }
+
+        const accountEl = document.getElementById('bobAccountNumber');
+        if (accountEl) {
+          accountEl.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '').slice(0, 14);
+          });
+
+          accountEl.addEventListener('keydown', function (e) {
+            if (e.key.length === 1 && !/\d/.test(e.key)) {
+              e.preventDefault();
+            }
+          });
+        }
+      })();
+
+// State management
       let state = {
         selectedApplications: new Set(),
         allCustomersData: [],
@@ -1953,6 +2314,7 @@ if (window.pdfjsLib) {
           bob_account: 0
         }
       };
+      window.cscCustomerState = state;
 
       // Show alert function
       function showAlert(message, type = 'info') {
@@ -2053,14 +2415,14 @@ if (window.pdfjsLib) {
       // Search Customers: one normal search input; selecting a service only
       // changes the table columns and the input hint.
       const SERVICE_TABLE_HEADERS = {
-        all: ['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Application','Password','Pending (₹)','Actions'],
+        all: ['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Application','Password','Pending (₹)','Photo','Actions'],
         passport: ['Service','Name','Father/Husband','Mobile','Application','Date of Birth','Pending (₹)','Actions'],
         epfo: ['Service','Name','Father/Husband','Mobile','PF Number','Date of Birth','Password','Actions'],
         aadhaar: ['Service','Name','Father/Husband','Mobile','Aadhar','Pending (₹)','Actions'],
         pan: ['Service','Name','Father/Husband','Mobile','Application','Date of Birth','Pending (₹)','Actions'],
         esarvish: ['Service','Name','Father/Husband','Mobile','Application','Pending (₹)','Actions'],
         license: ['Service','Name','Father/Husband','Mobile','Application','Pending (₹)','Actions'],
-        bob_account: ['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Actions'],
+        bob_account: ['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Photo','Actions'],
         pnb_account: ['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Actions']
       };
 
@@ -2117,9 +2479,13 @@ if (window.pdfjsLib) {
           ? value
           : '<span class="missing-data">---</span>';
 
+        const waMobile = String(mobile || '').replace(/\D/g, '');
+        const waNumber = waMobile.length === 10 ? `91${waMobile}` : waMobile;
+        const waButton = waNumber ? `<a class="btn btn-sm btn-success whatsapp-btn" href="https://wa.me/${waNumber}" target="_blank" rel="noopener" data-whatsapp-number="${waNumber}" title="Open WhatsApp Desktop"><i class="fab fa-whatsapp"></i></a>` : '';
         const actions = `<td class="user-actions">
           <button class="btn btn-sm btn-pnb-primary edit-btn" data-id="${id}" data-type="${type}" title="Edit"><i class="fas fa-edit"></i></button>
-          <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" data-type="${type}" title="Delete"><i class="fas fa-trash"></i></button>
+          ${waButton}
+          <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" data-type="${type}" data-direct-delete="true" type="button" title="Delete" onclick="return window.cscDeleteCustomer(this);"><i class="fas fa-trash"></i></button>
         </td>`;
 
         if (type === 'passport') {
@@ -2198,6 +2564,10 @@ if (window.pdfjsLib) {
         }
 
         if (type === 'bob_account') {
+          const photoSrc = customer.photoData || customer.photo || customer.photoUrl || customer.image || '';
+          const photoHtml = photoSrc
+            ? `<img src="${photoSrc}" class="customer-photo-thumb" loading="lazy" decoding="async" alt="Customer Photo" title="View Customer Photo" data-customer-id="${id}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';"><span class="missing-data" style="display:none;">---</span>`
+            : '<span class="missing-data">---</span>';
           return `<tr>
             <td>BOB Account</td>
             <td style="font-weight:600;">${miss(name)}</td>
@@ -2205,6 +2575,7 @@ if (window.pdfjsLib) {
             <td>${miss(mobile)}</td>
             <td style="font-weight:600;">${miss(account)}</td>
             <td style="font-weight:600;">${miss(aadhar)}</td>
+            <td>${photoHtml}</td>
             ${actions}
           </tr>`;
         }
@@ -2236,6 +2607,17 @@ if (window.pdfjsLib) {
       }
 
 
+      function viewCustomerPhoto(customerId) {
+        const customer = (state.allCustomersData || []).find(c => String(c.id) === String(customerId));
+        const photoSrc = customer && (customer.photoData || customer.photo || customer.photoUrl || customer.image);
+        if (!customer || !photoSrc) { showAlert('Customer photo is not available.', 'warning'); return; }
+        const modalEl = document.getElementById('customerPhotoViewModal');
+        const img = document.getElementById('customerPhotoViewImage');
+        if (!modalEl || !img) return;
+        img.src = photoSrc; img.style.transform='scale(1)';
+        bootstrap.Modal.getOrCreateInstance(modalEl, {backdrop:true, keyboard:true}).show();
+      }
+
       // Common "All Customers" renderer: always uses the requested order:
       // Service, Name, Father/Husband, Mobile, Account No., Aadhar,
       // Application, Password, Pending (₹), Actions.
@@ -2260,9 +2642,17 @@ if (window.pdfjsLib) {
         const password = customer.password || '—';
         const pending = Number(customer.pending || 0);
         const pendingHtml = `<span class="pending-amount" style="color:#dc3545 !important;font-weight:bold;">₹${pending.toFixed(2)}</span>`;
+        const waMobile = String(mobile || '').replace(/\D/g, '');
+        const waNumber = waMobile.length === 10 ? `91${waMobile}` : waMobile;
+        const waButton = waNumber ? `<a class="btn btn-sm btn-success whatsapp-btn" href="https://wa.me/${waNumber}" target="_blank" rel="noopener" data-whatsapp-number="${waNumber}" title="Open WhatsApp Desktop"><i class="fab fa-whatsapp"></i></a>` : '';
+        const allPhotoSrc = customer.photoData || customer.photo || customer.photoUrl || customer.image || '';
+        const allPhotoHtml = type === 'bob_account' && allPhotoSrc
+          ? `<img src="${allPhotoSrc}" class="customer-photo-thumb" loading="lazy" decoding="async" alt="Customer Photo" title="View Customer Photo" data-customer-id="${id}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';"><span class="missing-data" style="display:none;">---</span>`
+          : '<span class="missing-data">---</span>';
         const actions = `<td class="user-actions">
-          <button class="btn btn-sm btn-pnb-primary edit-btn" data-id="${id}" data-type="${type}"><i class="fas fa-edit"></i></button>
-          <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" data-type="${type}"><i class="fas fa-trash"></i></button>
+          <button class="btn btn-sm btn-pnb-primary edit-btn" data-id="${id}" data-type="${type}" title="Edit"><i class="fas fa-edit"></i></button>
+          ${waButton}
+          <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" data-type="${type}" data-direct-delete="true" type="button" title="Delete" onclick="return window.cscDeleteCustomer(this);"><i class="fas fa-trash"></i></button>
         </td>`;
         return `<tr>
           <td>${service}</td>
@@ -2274,38 +2664,129 @@ if (window.pdfjsLib) {
           <td style="font-weight:600;">${application}</td>
           <td>${password}</td>
           <td>${pendingHtml}</td>
+          <td>${allPhotoHtml}</td>
           ${actions}
         </tr>`;
       }
 
-      // One delegated listener for the result table. This is much faster than
-      // attaching two listeners to every row after every search/filter render.
-      function addTableEventListeners() {
-        if (elements.resultsList && !elements.resultsList.dataset.delegated) {
-          elements.resultsList.dataset.delegated = 'true';
-          elements.resultsList.addEventListener('click', (e) => {
-            const editBtn = e.target.closest('.edit-btn');
-            const deleteBtn = e.target.closest('.delete-btn');
-            const btn = editBtn || deleteBtn;
-            if (!btn) return;
-            e.stopPropagation();
-            const custId = btn.dataset.id;
-            const custType = btn.dataset.type;
-            if (editBtn) {
-              openEditModal(custId, custType);
-              return;
-            }
-            if (confirm('Are you sure you want to delete this customer?')) {
-              const collection = (['pnb_account', 'bob_account'].includes(custType)) ? 'customers' : 'applications';
-              db.collection(collection).doc(custId).delete().then(() => {
-                state.allCustomersData = state.allCustomersData.filter(x => !(x.id === custId && (x.serviceType || 'pnb_account') === custType));
-                loadServiceStats();
-                performSearch();
-                showAlert('Customer deleted successfully!', 'success');
-              });
-            }
-          });
+      // Direct delete handler exposed globally so dynamically rendered table buttons
+      // always work, even after searches/filters/re-renders.
+      window.cscDeleteCustomer = async function(btn) {
+        try {
+          if (!btn) return false;
+          const id = String(btn.getAttribute('data-id') || '').trim();
+          const type = String(btn.getAttribute('data-type') || '').trim();
+          if (!id || !type) { alert('Customer ID not found.'); return false; }
+          if (!(await showStyledConfirm('Are you sure you want to delete this customer?'))) return false;
+          const password = await showStyledPassword('Enter admin password to delete this customer:');
+          if (password === null) return false;
+          if (password !== 'Ansari@123') { await showStyledResult('Incorrect password. Customer was not deleted.', 'danger'); return false; }
+          const old = btn.innerHTML;
+          btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+          const firestore = (window.firebase && firebase.firestore) ? firebase.firestore() : null;
+          if (!firestore) throw new Error('Firebase Firestore is not available.');
+          const collections = (type === 'bob_account' || type === 'pnb_account') ? ['customers','applications'] : ['applications','customers'];
+          let deleted = false, lastError = null;
+          for (const col of collections) {
+            try {
+              const ref = firestore.collection(col).doc(id);
+              const snap = await ref.get();
+              if (snap.exists) { await ref.delete(); deleted = true; break; }
+            } catch (err) { lastError = err; }
+          }
+          if (!deleted) { btn.disabled=false; btn.innerHTML=old; alert('Customer record was not found in Firebase.' + (lastError ? '\n' + lastError.message : '')); return false; }
+          if (typeof state !== 'undefined' && Array.isArray(state.allCustomersData)) {
+            state.allCustomersData = state.allCustomersData.filter(x => String(x.id) !== id);
+          }
+          const row = btn.closest('tr'); if (row) row.remove();
+          if (typeof loadServiceStats === 'function') { try { loadServiceStats(); } catch (_) {} }
+          alert('Customer deleted successfully!');
+          return false;
+        } catch (err) {
+          console.error('Delete failed:', err);
+          btn.disabled=false;
+          alert('Delete failed: ' + (err && err.message ? err.message : err));
+          return false;
         }
+      };
+
+      // Reliable Edit/Delete handler for BOTH customer tables.
+      // Uses event delegation so it keeps working after every search/filter/render.
+      function addTableEventListeners() {
+        if (document.documentElement.dataset.customerActionsBound === 'true') return;
+        document.documentElement.dataset.customerActionsBound = 'true';
+
+        document.addEventListener('click', async (e) => {
+          const editBtn = e.target.closest && e.target.closest('.edit-btn');
+          const deleteBtn = e.target.closest && e.target.closest('.delete-btn');
+          const btn = editBtn || deleteBtn;
+          if (!btn) return;
+          // Delete buttons use a direct window handler below. Do not run this
+          // delegated handler a second time for the same click.
+          if (deleteBtn) return;
+
+          e.preventDefault();
+          e.stopImmediatePropagation();
+
+          const custId = btn.getAttribute('data-id');
+          const custType = btn.getAttribute('data-type');
+          if (!custId || !custType) {
+            showAlert('Customer ID not found.', 'danger');
+            return;
+          }
+
+          if (editBtn) {
+            openEditModal(custId, custType);
+            return;
+          }
+
+          // Individual delete: confirmation + fixed admin password.
+          const ok = window.confirm('Are you sure you want to delete this customer?');
+          if (!ok) return;
+
+          const password = await showStyledPassword('Enter admin password to delete this customer:');
+          if (password === null) return;
+          if (password !== 'Ansari@123') {
+            await showStyledResult('Incorrect password. Customer was not deleted.', 'danger');
+            return;
+          }
+
+          const collection = ['pnb_account', 'bob_account'].includes(custType)
+            ? 'customers'
+            : 'applications';
+
+          const originalHtml = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+          try {
+            await db.collection(collection).doc(String(custId)).delete();
+
+            // Update local data immediately.
+            state.allCustomersData = (state.allCustomersData || []).filter(
+              x => String(x.id) !== String(custId)
+            );
+            state.selectedApplications.delete(String(custId));
+            state.selectedApplications.delete(custId);
+
+            // Remove current row immediately; no second search required.
+            const row = btn.closest('tr');
+            if (row) row.remove();
+
+            // Re-render current view if the row was generated by the service/all-customer list.
+            if (typeof renderCustomerResults === 'function' && elements.applicationListBody && elements.applicationListBody.contains(row)) {
+              renderCustomerResults(state.allCustomersData, state.currentService || 'all');
+            }
+
+            if (typeof loadServiceStats === 'function') loadServiceStats();
+            showAlert('Customer deleted successfully!', 'success');
+          } catch (error) {
+            console.error('Customer delete failed:', error);
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+            showAlert('Customer could not be deleted: ' + (error && error.message ? error.message : 'Unknown error'), 'danger');
+          }
+        }, true);
       }
 
       // Open edit modal with payment fields
@@ -2401,12 +2882,161 @@ if (window.pdfjsLib) {
                 document.getElementById('bobAccountAadhar').value = formatAadhar(cust.aadhar) || '';
                 updateBOBAadhaarValidation(document.getElementById('bobAccountAadhar').value);
                 document.getElementById('bobAccountNumber').value = formatAccount(cust.account) || '';
+                document.getElementById('bobAccountExistingPhoto').value = cust.photoData || '';
+                document.getElementById('bobAccountPhoto').value = '';
+                const bobPreview = document.getElementById('bobAccountPhotoPreview');
+                const bobStatus = document.getElementById('bobAccountPhotoStatus');
+                if (cust.photoData) {
+                  bobPreview.src = cust.photoData;
+                  bobPreview.classList.remove('d-none');
+                  bobStatus.textContent = 'Existing photo loaded. Choose a new photo to replace it.';
+                } else {
+                  bobPreview.src = '';
+                  bobPreview.classList.add('d-none');
+                  bobStatus.textContent = '';
+                }
                 bobAccountModal.show();
                 break;
             }
           }
         });
       }
+
+      // BOB photo helper: accepts any image size and produces a JPEG of 10 KB or less.
+      function dataUrlBytes(dataUrl) {
+        if (!dataUrl || !dataUrl.includes(',')) return 0;
+        const base64 = dataUrl.split(',')[1];
+        const padding = (base64.match(/=+$/) || [''])[0].length;
+        return Math.max(0, Math.floor(base64.length * 3 / 4) - padding);
+      }
+
+      function formatBytes(bytes) {
+        if (bytes < 1024) return `${bytes} B`;
+        return `${(bytes / 1024).toFixed(2)} KB`;
+      }
+
+      function loadImageFromFile(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = () => reject(new Error('Invalid image file'));
+            img.src = reader.result;
+          };
+          reader.onerror = () => reject(new Error('Could not read image'));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      async function compressImageToPhoto(file) {
+        if (!file || !file.type.startsWith('image/')) throw new Error('Please select an image file.');
+
+        // Fast 10 KB encoder: far fewer canvas encodes than the old binary-search loop.
+        // WebP keeps noticeably better detail than JPEG at this tiny file size.
+        const img = await loadImageFromFile(file);
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+        if (!ctx) throw new Error('Canvas is not supported by this browser.');
+
+        const sw = img.naturalWidth || img.width;
+        const sh = img.naturalHeight || img.height;
+        const longest = Math.max(sw, sh);
+        const mime = 'image/webp';
+
+        // Start around passport-photo resolution. Only resize when needed.
+        let side = Math.min(850, Math.max(600, longest));
+        for (let attempt = 0; attempt < 5; attempt++) {
+          const scale = Math.min(1, side / longest);
+          const w = Math.max(1, Math.round(sw * scale));
+          const h = Math.max(1, Math.round(sh * scale));
+          canvas.width = w; canvas.height = h;
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, w, h);
+
+          // Try a few quality levels instead of 10+ binary-search encodes.
+          const qualities = [0.62, 0.50, 0.40, 0.30, 0.22];
+          let best = null;
+          for (const quality of qualities) {
+            const dataUrl = canvas.toDataURL(mime, quality);
+            const bytes = dataUrlBytes(dataUrl);
+            if (bytes > 0 && bytes <= 10240) { best = dataUrl; break; }
+          }
+          if (best) return best;
+          side = Math.floor(side * 0.82);
+        }
+
+        // Small JPEG fallback for browsers with weak WebP support.
+        const scale = Math.min(1, 500 / longest);
+        canvas.width = Math.max(1, Math.round(sw * scale));
+        canvas.height = Math.max(1, Math.round(sh * scale));
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        for (const quality of [0.45, 0.32, 0.22, 0.14]) {
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          if (dataUrlBytes(dataUrl) <= 10240) return dataUrl;
+        }
+        throw new Error('Unable to create a photo at or below 10 KB.');
+      }
+
+      elements.bobAccountPhoto?.addEventListener('change', async function() {
+        const file = this.files?.[0];
+        const preview = elements.bobAccountPhotoPreview;
+        const status = elements.bobAccountPhotoStatus;
+        if (!file) {
+          this._compressedPhotoFile = null;
+          this._compressedPhotoData = '';
+          this._photoCompressPromise = null;
+          if (preview) { preview.src = ''; preview.classList.add('d-none'); }
+          return;
+        }
+
+        if (!file.type.startsWith('image/')) {
+          this._compressedPhotoFile = null;
+          this._compressedPhotoData = '';
+          this._photoCompressPromise = null;
+          this.value = '';
+          if (preview) { preview.src = ''; preview.classList.add('d-none'); }
+          if (status) status.textContent = 'Please select an image file.';
+          return;
+        }
+
+        // Show the selected photo immediately; do not wait for compression.
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (preview) {
+            preview.src = reader.result;
+            preview.classList.remove('d-none');
+          }
+        };
+        reader.onerror = () => console.error('Photo preview could not be loaded.');
+        reader.readAsDataURL(file);
+
+        if (status) status.textContent = `Original: ${formatBytes(file.size)} — preparing 10 KB copy...`;
+        this._compressedPhotoFile = file;
+        this._compressedPhotoData = '';
+        this._photoCompressPromise = compressImageToPhoto(file).then(compressed => {
+          this._compressedPhotoData = compressed;
+          if (status) status.textContent =
+            `✓ Ready to save: ${formatBytes(dataUrlBytes(compressed))} (10 KB maximum).`;
+          return compressed;
+        });
+
+        try {
+          await this._photoCompressPromise;
+        } catch (error) {
+          console.error(error);
+          this._compressedPhotoFile = null;
+          this._compressedPhotoData = '';
+          this._photoCompressPromise = null;
+          if (status) status.textContent = 'Preview ready, but 10 KB compression failed.';
+          showAlert('Photo preview is available, but the 10 KB copy could not be prepared.', 'danger');
+        }
+      });
 
       elements.saveBOBAccountBtn?.addEventListener('click', function() {
         const name = document.getElementById('bobAccountName').value;
@@ -2418,12 +3048,26 @@ if (window.pdfjsLib) {
           showAlert('Please fill all required fields', 'danger');
           return;
         }
-        if (mobile.length !== 10) {
-          showAlert('Mobile number must be exactly 10 digits', 'danger');
+        if (!/^[\p{L} ]+$/u.test(name.trim())) {
+          showAlert('Customer Name में केवल अक्षर और space लिखें. Digits allowed नहीं हैं.', 'danger');
+          document.getElementById('bobAccountName')?.focus();
           return;
         }
-        if (accountNumber.length !== 14) {
-          showAlert('Account number must be exactly 14 digits', 'danger');
+
+        const fatherName = document.getElementById('bobAccountFatherName').value.trim();
+        if (fatherName && !/^[\p{L} ]+$/u.test(fatherName)) {
+          showAlert('Father/Husband Name में केवल अक्षर और space लिखें. Digits allowed नहीं हैं.', 'danger');
+          document.getElementById('bobAccountFatherName')?.focus();
+          return;
+        }
+        if (!/^[6-9]\d{9}$/.test(mobile)) {
+          showAlert('Mobile number must be 10 digits and start with 6, 7, 8 or 9.', 'danger');
+          document.getElementById('bobAccountMobile')?.focus();
+          return;
+        }
+        if (!/^\d{14}$/.test(accountNumber)) {
+          showAlert('BOB Account Number must be exactly 14 digits. More than 14 digits are not allowed.', 'danger');
+          document.getElementById('bobAccountNumber')?.focus();
           return;
         }
 
@@ -2434,29 +3078,67 @@ if (window.pdfjsLib) {
           return;
         }
 
-        const formData = {
-          name: name.toUpperCase(),
-          fatherName: document.getElementById('bobAccountFatherName').value.toUpperCase(),
-          mobile: mobile,
-          aadhar: document.getElementById('bobAccountAadhar').value.replace(/\s+/g, ''),
-          account: accountNumber,
-          serviceType: 'bob_account',
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        const photoInput = document.getElementById('bobAccountPhoto');
+        const selectedPhoto = photoInput?.files?.[0] || null;
+        const existingPhoto = document.getElementById('bobAccountExistingPhoto').value || '';
+
+        const saveBOBData = async () => {
+          let photoData = existingPhoto;
+          if (selectedPhoto) {
+            try {
+              // Reuse the already-compressed upload result; do NOT compress twice.
+              if (photoInput._compressedPhotoFile === selectedPhoto && photoInput._compressedPhotoData) {
+                photoData = photoInput._compressedPhotoData;
+              } else if (photoInput._compressedPhotoFile === selectedPhoto && photoInput._photoCompressPromise) {
+                photoData = await photoInput._photoCompressPromise;
+              } else {
+                document.getElementById('bobAccountPhotoStatus').textContent = 'Preparing photo...';
+                photoData = await compressImageToPhoto(selectedPhoto);
+                photoInput._compressedPhotoFile = selectedPhoto;
+                photoInput._compressedPhotoData = photoData;
+              }
+              document.getElementById('bobAccountPhotoStatus').textContent =
+                `Photo ready: ${formatBytes(dataUrlBytes(photoData))} (maximum 10 KB).`;
+            } catch (photoError) {
+              console.error('BOB photo compression error:', photoError);
+              showAlert('Could not compress the photo to 10 KB. Please try another photo.', 'danger');
+              return;
+            }
+          }
+
+          const formData = {
+            name: name.toUpperCase(),
+            fatherName: document.getElementById('bobAccountFatherName').value.toUpperCase(),
+            mobile: mobile,
+            aadhar: document.getElementById('bobAccountAadhar').value.replace(/\s+/g, ''),
+            account: accountNumber,
+            serviceType: 'bob_account',
+            photoData: photoData || '',
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+
+          checkDuplicateEntry(formData, appId).then(isDuplicate => {
+            if (isDuplicate) return;
+
+            const savePromise = appId
+              ? db.collection('customers').doc(appId).update(formData).then(() => ({ id: appId, isNew: false }))
+              : db.collection('customers').add({ ...formData, createdAt: firebase.firestore.FieldValue.serverTimestamp() }).then(ref => ({ id: ref.id, isNew: true }));
+
+            savePromise.then(result => {
+              updateLocalCustomerCache(result.id, formData, 'bob_account');
+              bobAccountModal.hide();
+              showAlert(appId ? 'BOB Account customer updated successfully!' : 'BOB Account customer saved successfully!', 'success');
+            }).catch(error => {
+              console.error('Error saving BOB account customer:', error);
+              showAlert('Error saving BOB account customer. Please try again.', 'danger');
+            });
+          }).catch(error => {
+            console.error('Duplicate check error:', error);
+            showAlert('Duplicate check could not be completed. Please try again.', 'danger');
+          });
         };
 
-        const savePromise = appId ?
-          db.collection('customers').doc(appId).update(formData) :
-          db.collection('customers').add({ ...formData, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-
-        savePromise.then(() => {
-          bobAccountModal.hide();
-          loadAllCustomers();
-          loadServiceStats();
-          showAlert(appId ? 'BOB Account customer updated successfully!' : 'BOB Account customer saved successfully!', 'success');
-        }).catch(error => {
-          console.error('Error saving BOB account customer:', error);
-          showAlert('Error saving BOB account customer. Please try again.', 'danger');
-        });
+        saveBOBData();
       });
 
       // Calculate pending amounts
@@ -2602,31 +3284,258 @@ if (window.pdfjsLib) {
         e.target.value = value.substring(0, 13);
       });
 
+      // Update the in-memory list immediately after an edit/save.
+      // This keeps the current search/filter visible and avoids requiring a new search.
+      function updateLocalCustomerCache(docId, formData, serviceType, createdAtValue) {
+        const index = state.allCustomersData.findIndex(item => String(item.id) === String(docId));
+        const updated = {
+          ...(index >= 0 ? state.allCustomersData[index] : {}),
+          ...formData,
+          id: docId,
+          serviceType: serviceType || formData.serviceType || (index >= 0 ? state.allCustomersData[index].serviceType : ''),
+          ...(createdAtValue ? { createdAt: createdAtValue } : {})
+        };
+
+        if (index >= 0) {
+          state.allCustomersData[index] = updated;
+        } else {
+          state.allCustomersData.unshift(updated);
+        }
+
+        state.dataLoaded = true;
+        loadServiceStats();
+        // Re-render using the EXISTING search text and service filter.
+        // No Firestore read and no second search is required.
+        performSearch();
+      }
+
+      // Duplicate-entry protection: blocks a second record with the same
+      // service-specific primary/unique number. Existing edits are excluded.
+      const DUPLICATE_RULES = {
+        passport:      { collection: 'applications', field: 'applicationNo', label: 'Passport Application Number' },
+        epfo:          { collection: 'applications', field: 'pfNo',          label: 'PF Number' },
+        aadhaar:       { collection: 'applications', field: 'aadhar',        label: 'Aadhaar Number' },
+        pan:           { collection: 'applications', field: 'panNo',         label: 'PAN Number' },
+        esarvish:      { collection: 'applications', field: 'applicationNo', label: 'eSarvish Application Number' },
+        license:      { collection: 'applications', field: 'applicationNo', label: 'Driving License Application Number' },
+        pnb_account:  { collection: 'customers',    field: 'account',       label: 'PNB Account Number' },
+        bob_account:  { collection: 'customers',    field: 'account',       label: 'BOB Account Number' }
+      };
+
+      async function checkDuplicateEntry(formData, docId = '') {
+        const rule = DUPLICATE_RULES[formData.serviceType];
+        if (!rule || !db) return false;
+
+        const rawValue = formData[rule.field];
+        const value = String(rawValue ?? '').trim();
+        if (!value) return false;
+
+        // First check the in-memory data for an immediate duplicate warning.
+        const localDuplicate = state.allCustomersData.some(item =>
+          String(item.id) !== String(docId || '') &&
+          String(item.serviceType || '').toLowerCase() === String(formData.serviceType).toLowerCase() &&
+          String(item[rule.field] ?? '').trim().toLowerCase() === value.toLowerCase()
+        );
+        if (localDuplicate) {
+          showAlert(`Duplicate entry blocked: ${rule.label} already exists.`, 'warning');
+          return true;
+        }
+
+        // Also check Firestore so duplicates are blocked even when the local
+        // search/cache does not currently contain the older record.
+        try {
+          const snap = await db.collection(rule.collection)
+            .where('serviceType', '==', formData.serviceType)
+            .where(rule.field, '==', rawValue)
+            .limit(5)
+            .get();
+
+          const duplicate = snap.docs.some(doc => String(doc.id) !== String(docId || ''));
+          if (duplicate) {
+            showAlert(`Duplicate entry blocked: ${rule.label} already exists.`, 'warning');
+            return true;
+          }
+        } catch (error) {
+          console.error('Duplicate check error:', error);
+          showAlert('Duplicate check could not be completed. Please try again.', 'danger');
+          return true;
+        }
+        return false;
+      }
+
+      // Live duplicate warning inside every service form.
+      // The warning appears under the unique-number field while typing and
+      // the Save button is disabled until the duplicate is cleared.
+      const LIVE_DUPLICATE_FIELDS = [
+        { serviceType: 'passport',  field: 'applicationNo', inputId: 'passportApplicationNo', idId: 'passportId', saveId: 'savePassportBtn', label: 'Passport Application Number' },
+        { serviceType: 'epfo',     field: 'pfNo',          inputId: 'epfoPFNo',             idId: 'epfoId',     saveId: 'saveEPFOBtn',     label: 'PF Number' },
+        { serviceType: 'aadhaar', field: 'aadhar',        inputId: 'aadhaarNumber',        idId: 'aadhaarId',  saveId: 'saveAadhaarBtn',  label: 'Aadhaar Number' },
+        { serviceType: 'pan',     field: 'panNo',         inputId: 'panApplicationNo',     idId: 'panId',     saveId: 'savePANBtn',     label: 'PAN/Application Number' },
+        { serviceType: 'esarvish',field: 'applicationNo', inputId: 'esarvishApplicationNo',  idId: 'esarvishId', saveId: 'saveESarvishBtn', label: 'eSarvish Application Number' },
+        { serviceType: 'license', field: 'applicationNo', inputId: 'licenseApplicationNo', idId: 'licenseId',  saveId: 'saveLicenseBtn', label: 'Driving License Application Number' },
+        { serviceType: 'pnb_account', field: 'account', inputId: 'accountNumber',    idId: 'accountId',    saveId: 'saveAccountBtn',    label: 'PNB Account Number' },
+        { serviceType: 'bob_account', field: 'account', inputId: 'bobAccountNumber', idId: 'bobAccountId', saveId: 'saveBOBAccountBtn', label: 'BOB Account Number' }
+      ];
+
+      function setupLiveDuplicateChecks() {
+        LIVE_DUPLICATE_FIELDS.forEach(cfg => {
+          const input = document.getElementById(cfg.inputId);
+          if (!input) return;
+
+          let status = document.getElementById(cfg.inputId + 'DuplicateStatus');
+          if (!status) {
+            status = document.createElement('div');
+            status.id = cfg.inputId + 'DuplicateStatus';
+            status.className = 'duplicate-status small mt-1';
+            input.parentElement.appendChild(status);
+          }
+
+          let timer = null;
+          let checkToken = 0;
+          const saveBtn = document.getElementById(cfg.saveId);
+
+          const setState = (type, text) => {
+            status.className = 'duplicate-status small mt-1';
+            if (type === 'duplicate') {
+              status.classList.add('text-danger', 'fw-bold');
+              status.innerHTML = '✕ ' + text;
+              input.classList.add('is-invalid');
+              input.classList.remove('is-valid');
+              if (saveBtn) saveBtn.disabled = true;
+            } else if (type === 'checking') {
+              status.classList.add('text-warning');
+              status.textContent = 'Checking duplicate...';
+              input.classList.remove('is-invalid', 'is-valid');
+              if (saveBtn) saveBtn.disabled = true;
+            } else if (type === 'available') {
+              status.classList.add('text-success');
+              status.textContent = '✓ This number is available.';
+              input.classList.remove('is-invalid');
+              input.classList.add('is-valid');
+              if (saveBtn) saveBtn.disabled = false;
+            } else {
+              status.textContent = '';
+              input.classList.remove('is-invalid', 'is-valid');
+              if (saveBtn) saveBtn.disabled = false;
+            }
+          };
+
+          const runCheck = async () => {
+            const value = String(input.value || '').replace(/\s+/g, '').trim();
+            const docId = document.getElementById(cfg.idId)?.value || '';
+            const token = ++checkToken;
+
+            if (!value) {
+              setState('empty', '');
+              return;
+            }
+
+            // Do not query until the normal minimum lengths are reached.
+            if ((cfg.serviceType === 'aadhaar' && value.replace(/\D/g, '').length !== 12) ||
+                (cfg.serviceType === 'epfo' && value.length < 12) ||
+                (cfg.serviceType === 'license' && value.length < 10) ||
+                ((cfg.serviceType === 'bob_account' || cfg.serviceType === 'pnb_account') && value.length < 10)) {
+              setState('empty', '');
+              return;
+            }
+
+            setState('checking', '');
+            try {
+              let duplicate = state.allCustomersData.some(item =>
+                String(item.id) !== String(docId || '') &&
+                String(item.serviceType || '').toLowerCase() === cfg.serviceType.toLowerCase() &&
+                String(item[cfg.field] ?? '').replace(/\s+/g, '').trim().toLowerCase() === value.toLowerCase()
+              );
+
+              if (!duplicate && db) {
+                const rule = DUPLICATE_RULES[cfg.serviceType];
+                if (cfg.serviceType === 'aadhaar') {
+                  // Aadhaar may be stored as 1234 5678 9012 or 123456789012.
+                  // Read Aadhaar records for this service and compare normalized digits.
+                  const snap = await db.collection(rule.collection)
+                    .where('serviceType', '==', cfg.serviceType)
+                    .limit(200)
+                    .get();
+                  duplicate = snap.docs.some(doc => {
+                    if (String(doc.id) === String(docId || '')) return false;
+                    const saved = String(doc.data()?.[cfg.field] ?? '').replace(/\D/g, '');
+                    return saved === value;
+                  });
+                } else {
+                  const snap = await db.collection(rule.collection)
+                    .where('serviceType', '==', cfg.serviceType)
+                    .where(cfg.field, '==', value)
+                    .limit(5)
+                    .get();
+                  duplicate = snap.docs.some(doc => String(doc.id) !== String(docId || ''));
+                }
+              }
+
+              if (token !== checkToken) return;
+              if (duplicate) {
+                setState('duplicate', `Duplicate! ${cfg.label} already exists.`);
+              } else {
+                setState('available', '');
+              }
+            } catch (error) {
+              console.error('Live duplicate check error:', error);
+              if (token === checkToken) setState('empty', '');
+            }
+          };
+
+          input.addEventListener('input', () => {
+            clearTimeout(timer);
+            const value = String(input.value || '').replace(/\s+/g, '').trim();
+            if (!value) {
+              setState('empty', '');
+              return;
+            }
+            setState('checking', '');
+            timer = setTimeout(runCheck, 450);
+          });
+
+          input.addEventListener('change', runCheck);
+
+          // Re-check automatically when an existing record is opened for edit.
+          const modal = input.closest('.modal');
+          modal?.addEventListener('shown.bs.modal', () => setTimeout(runCheck, 80));
+          modal?.addEventListener('hidden.bs.modal', () => setState('empty', ''));
+        });
+      }
+
+      setupLiveDuplicateChecks();
+
       // Save functions with validation
       function saveApplication(formData, docId, modal) {
         if (!db) {
           showAlert('Firebase not connected', 'danger');
           return;
         }
-        
-        const savePromise = docId ? 
-          db.collection("applications").doc(docId).update(formData) :
-          db.collection("applications").add({
-            ...formData,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        
-        savePromise
-          .then(() => {
+
+        checkDuplicateEntry(formData, docId).then(isDuplicate => {
+          if (isDuplicate) return;
+
+          const savePromise = docId
+            ? db.collection('applications').doc(docId).update(formData).then(() => ({ id: docId, isNew: false }))
+            : db.collection('applications').add({
+                ...formData,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              }).then(ref => ({ id: ref.id, isNew: true }));
+
+          savePromise
+          .then(result => {
+            updateLocalCustomerCache(result.id, formData, formData.serviceType);
             modal.hide();
-            loadAllCustomers();
-            loadServiceStats();
             showAlert(docId ? 'Application updated successfully!' : 'Application saved successfully!', 'success');
           })
-          .catch(error => {
-            console.error('Error saving application:', error);
-            showAlert('Error saving application. Please try again.', 'danger');
-          });
+            .catch(error => {
+              console.error('Error saving application:', error);
+              showAlert('Error saving application. Please try again.', 'danger');
+            });
+        }).catch(error => {
+          console.error('Duplicate check error:', error);
+          showAlert('Duplicate check could not be completed. Please try again.', 'danger');
+        });
       }
 
       // Save button listeners
@@ -2869,25 +3778,47 @@ if (window.pdfjsLib) {
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
         
-        const savePromise = appId ? 
-          db.collection("customers").doc(appId).update(formData) :
-          db.collection("customers").add({
-            ...formData,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        
-        savePromise
-          .then(() => {
-            pnbAccountModal.hide();
-            loadAllCustomers();
-            loadServiceStats();
-            showAlert(appId ? 'Customer updated successfully!' : 'Customer saved successfully!', 'success');
-          })
-          .catch(error => {
-            console.error('Error saving customer:', error);
-            showAlert('Error saving customer. Please try again.', 'danger');
-          });
+        checkDuplicateEntry(formData, appId).then(isDuplicate => {
+          if (isDuplicate) return;
+
+          const savePromise = appId
+            ? db.collection('customers').doc(appId).update(formData).then(() => ({ id: appId, isNew: false }))
+            : db.collection('customers').add({
+                ...formData,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              }).then(ref => ({ id: ref.id, isNew: true }));
+
+          savePromise
+            .then(result => {
+              updateLocalCustomerCache(result.id, formData, 'pnb_account');
+              pnbAccountModal.hide();
+              showAlert(appId ? 'Customer updated successfully!' : 'Customer saved successfully!', 'success');
+            })
+            .catch(error => {
+              console.error('Error saving customer:', error);
+              showAlert('Error saving customer. Please try again.', 'danger');
+            });
+        }).catch(error => {
+          console.error('Duplicate check error:', error);
+          showAlert('Duplicate check could not be completed. Please try again.', 'danger');
+        });
       });
+
+      // Approximate customer data size currently loaded in memory.
+      // This cannot report Firebase's exact billed storage/index size from the client.
+      function updateFirebaseDataUsage() {
+        const usedEl = document.getElementById('firebaseDataUsed');
+        const remainingEl = document.getElementById('firebaseDataRemaining');
+        const barEl = document.getElementById('firebaseDataUsageBar');
+        if (!usedEl) return;
+        const records = Array.isArray(state.allCustomersData) ? state.allCustomersData : [];
+        let bytes = 0;
+        try { bytes = new Blob([JSON.stringify(records)]).size; } catch (e) { bytes = JSON.stringify(records).length; }
+        const mb = bytes / (1024 * 1024);
+        usedEl.textContent = mb < 1 ? (bytes / 1024).toFixed(1) + ' KB' : mb.toFixed(2) + ' MB';
+        if (barEl) barEl.style.width = Math.min(100, Math.max(0.2, (bytes / (1024 * 1024 * 1024)) * 100)) + '%';
+        if (remainingEl) remainingEl.textContent = 'Exact remaining Firebase storage: check Firebase Console';
+      }
 
       // Load stats from the in-memory cache when possible.
       function loadServiceStats() {
@@ -2908,6 +3839,7 @@ if (window.pdfjsLib) {
           if (elements.statPNBAccount) elements.statPNBAccount.textContent = state.serviceStats.pnb_account || 0;
           if (elements.statBOBAccount) elements.statBOBAccount.textContent = state.serviceStats.bob_account || 0;
           if (elements.customerCountBadge) elements.customerCountBadge.textContent = state.allCustomersData.length;
+          updateFirebaseDataUsage();
           return state.serviceStats;
         };
 
@@ -2931,7 +3863,7 @@ if (window.pdfjsLib) {
         state.isLoading = true;
 
         if (elements.applicationListBody) {
-          elements.applicationListBody.innerHTML = '<tr><td colspan="10" class="text-center">Loading customers...</td></tr>';
+          elements.applicationListBody.innerHTML = '<tr><td colspan="11" class="text-center">Loading customers...</td></tr>';
         }
 
         const customersPromise = db.collection('customers').orderBy('createdAt', 'desc').get();
@@ -2960,7 +3892,7 @@ if (window.pdfjsLib) {
             console.error('Error loading customers:', error);
             state.isLoading = false;
             if (elements.applicationListBody) {
-              elements.applicationListBody.innerHTML = '<tr><td colspan="10" class="text-center">Error loading data</td></tr>';
+              elements.applicationListBody.innerHTML = '<tr><td colspan="11" class="text-center">Error loading data</td></tr>';
             }
             showAlert('Error loading customers', 'danger');
             return 0;
@@ -3116,6 +4048,10 @@ if (window.pdfjsLib) {
       window.openBOBAccountForm = function() {
         document.getElementById('bobAccountForm').reset();
         document.getElementById('bobAccountId').value = '';
+        document.getElementById('bobAccountExistingPhoto').value = '';
+        document.getElementById('bobAccountPhotoStatus').textContent = '';
+        document.getElementById('bobAccountPhotoPreview').src = '';
+        document.getElementById('bobAccountPhotoPreview').classList.add('d-none');
         document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
         serviceSelectionModal.hide();
         bobAccountModal.show();
@@ -3310,7 +4246,8 @@ if (window.pdfjsLib) {
         })[service] || service || 'Customers';
       }
 
-      function downloadTemplate() {
+      async function downloadTemplate() {
+        try { await ensureXLSX(); } catch (e) { showAlert('Excel library could not be loaded. Please try again.', 'danger'); return; }
         const templateData = [{
           serviceType: "pnb_account",
           name: "PNB CUSTOMER FULL NAME",
@@ -3336,12 +4273,13 @@ if (window.pdfjsLib) {
         showAlert('Template downloaded successfully!', 'success');
       }
 
-      function processImport() {
+      async function processImport() {
         const file = elements.importFile?.files[0];
         if (!file) {
           showAlert('Please select a file first', 'warning');
           return;
         }
+        try { await ensureXLSX(); } catch (e) { showAlert('Excel library could not be loaded. Please try again.', 'danger'); return; }
 
         if (!db) {
           showAlert('Firebase not connected', 'danger');
@@ -3628,48 +4566,99 @@ if (window.pdfjsLib) {
         if (elements.deleteCount) {
           elements.deleteCount.textContent = state.selectedApplications.size;
         }
+        if (elements.bulkDeletePassword) elements.bulkDeletePassword.value = '';
+        if (elements.bulkDeletePasswordError) {
+          elements.bulkDeletePasswordError.textContent = '';
+          elements.bulkDeletePasswordError.classList.add('d-none');
+        }
         bulkDeleteModal.show();
       }
 
       async function performBulkDelete() {
-        bulkDeleteModal.hide();
-        if (elements.bulkActionsPanel) {
-          elements.bulkActionsPanel.style.display = 'none';
-        }
-        
-        const deletePromises = Array.from(state.selectedApplications).map(async id => {
-          try {
-            await db.collection("customers").doc(id).delete();
-            return { success: true, id };
-          } catch (error) {
-            try {
-              await db.collection("applications").doc(id).delete();
-              return { success: true, id };
-            } catch (error2) {
-              return { error: true, id };
-            }
+        const password = elements.bulkDeletePassword?.value || '';
+        const errorBox = elements.bulkDeletePasswordError;
+
+        if (!password) {
+          if (errorBox) {
+            errorBox.textContent = 'Please enter your admin password.';
+            errorBox.classList.remove('d-none');
           }
-        });
+          return;
+        }
 
-        const results = await Promise.all(deletePromises);
-        const successCount = results.filter(r => r.success).length;
+        if (password !== 'Ansari@123') {
+          if (errorBox) {
+            errorBox.textContent = 'Incorrect password. No customers were deleted.';
+            errorBox.classList.remove('d-none');
+          }
+          return;
+        }
 
-        loadAllCustomers();
-        loadServiceStats();
-        
-        showAlert(`Bulk delete completed! ${successCount} customers deleted`, 'success');
-        
-        document.querySelectorAll('.bulk-checkbox').forEach(cb => cb.remove());
-        state.selectedApplications.clear();
+        // The custom admin password is the authorization for deletion.
+
+        const finalButton = elements.finalConfirmDeleteBtn;
+        if (finalButton) {
+          finalButton.disabled = true;
+          finalButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Verifying...';
+        }
+
+        try {
+          // Admin password is verified above before any deletion.
+          bulkDeleteModal.hide();
+          if (elements.bulkActionsPanel) {
+            elements.bulkActionsPanel.style.display = 'none';
+          }
+
+          const selectedIds = Array.from(state.selectedApplications);
+          const deletePromises = selectedIds.map(async id => {
+            try {
+              await db.collection("customers").doc(id).delete();
+              return { success: true, id };
+            } catch (error) {
+              try {
+                await db.collection("applications").doc(id).delete();
+                return { success: true, id };
+              } catch (error2) {
+                return { error: true, id };
+              }
+            }
+          });
+
+          const results = await Promise.all(deletePromises);
+          const successCount = results.filter(r => r.success).length;
+
+          loadAllCustomers();
+          loadServiceStats();
+
+          showAlert(`Bulk delete completed! ${successCount} customers deleted`, 'success');
+
+          document.querySelectorAll('.bulk-checkbox').forEach(cb => cb.remove());
+          state.selectedApplications.clear();
+          if (elements.selectedCount) elements.selectedCount.textContent = '0';
+          // Refresh the page automatically after successful bulk deletion.
+          setTimeout(() => window.location.reload(), 600);
+        } catch (error) {
+          console.error('Bulk delete password verification failed:', error);
+          if (errorBox) {
+            errorBox.textContent = 'Incorrect password. No customers were deleted.';
+            errorBox.classList.remove('d-none');
+          }
+        } finally {
+          if (finalButton) {
+            finalButton.disabled = false;
+            finalButton.innerHTML = 'Confirm Delete';
+          }
+        }
       }
 
       // Backup and restore
-      function backupData() {
+      async function backupData() {
         if (!db) {
           showAlert('Firebase not connected', 'danger');
           return;
         }
         
+        try { await ensureFileSaver(); } catch (e) { showAlert('Download library could not be loaded. Please try again.', 'danger'); return; }
         Promise.all([
           db.collection("customers").get(),
           db.collection("applications").get()
@@ -3939,8 +4928,7 @@ if (window.pdfjsLib) {
 
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<!-- PDF.js is lazy-loaded on first PDF autofill use. -->
 
 
 
@@ -4036,6 +5024,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function readPDF(file) {
+    await window.ensurePdfJs();
     if (!window.pdfjsLib) throw new Error('PDF reader library load nahi hui.');
 
     const bytes = new Uint8Array(await file.arrayBuffer());
@@ -4184,6 +5173,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function readPDF(file) {
+    await window.ensurePdfJs();
     if (!window.pdfjsLib) throw new Error('PDF reader load नहीं हुई।');
 
     const bytes = new Uint8Array(await file.arrayBuffer());
@@ -4341,6 +5331,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function readPDF(file) {
+    await window.ensurePdfJs();
     if (!window.pdfjsLib) throw new Error('PDF reader load नहीं हुई।');
 
     const bytes = new Uint8Array(await file.arrayBuffer());
@@ -4515,6 +5506,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function readPDF(file) {
+    await window.ensurePdfJs();
     if (!window.pdfjsLib) throw new Error('PDF reader load नहीं हुई।');
 
     const bytes = new Uint8Array(await file.arrayBuffer());
@@ -4633,7 +5625,7 @@ document.addEventListener('DOMContentLoaded', function(){
           const header = headers[index] || '';
           // Do not change action buttons or monetary/payment columns.
           if (/action|pending|payment|amount|₹/.test(header)) return;
-          if (cell.querySelector('button,a,.missing-data')) return;
+          if (cell.querySelector('button,a,.missing-data,img,svg')) return;
 
           const value = cell.textContent.replace(/\u00a0/g,' ').trim();
 
@@ -4673,7 +5665,7 @@ document.addEventListener('DOMContentLoaded', function(){
     pan:['Service','Name','Father/Husband','Mobile','Application','Date of Birth','Pending (₹)','Actions'],
     esarvish:['Service','Name','Father/Husband','Mobile','Application','Pending (₹)','Actions'],
     license:['Service','Name','Father/Husband','Mobile','Application','Pending (₹)','Actions'],
-    bob_account:['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Actions'],
+    bob_account:['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Photo','Actions'],
     pnb_account:['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Actions']
   };
 
@@ -4734,8 +5726,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const filters=document.getElementById('serviceFilterOptions');
     if(filters) observer.observe(filters,{attributes:true,childList:true,subtree:true});
 
-    // Last-resort safety net for any synchronous re-render.
-    setInterval(repair,300);
+    // MutationObserver above handles dynamic table/service changes; no polling loop needed.
   });
 
   document.addEventListener('click',function(e){
@@ -4747,6 +5738,276 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   window.forceSelectedServiceTableColumns=repair;
+})();
+</script>
+
+<script>
+(function(){
+  function initCustomerPhotoViewer(){
+    const modalEl=document.getElementById('customerPhotoViewModal');
+    const img=document.getElementById('customerPhotoViewImage');
+    const closeTop=document.getElementById('customerPhotoCloseBtn');
+    const closeBottom=document.getElementById('customerPhotoCloseBtnFooter');
+    if(!modalEl || !img) return;
+
+    function resetPhoto(){
+      img.classList.remove('photo-zoomed');
+      img.style.cursor='zoom-in';
+      img.style.width='min(600px,82vw)';
+      img.style.height='min(780px,72vh)';
+      img.style.maxWidth='92vw';
+      img.style.maxHeight='82vh';
+      img.style.objectFit='contain';
+    }
+
+    function closePhoto(){
+      const instance=bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
+      instance.hide();
+    }
+
+    // First click: normal large passport preview. Second click: zoom in.
+    img.addEventListener('click', function(){
+      const zoomed=this.classList.toggle('photo-zoomed');
+      this.style.cursor=zoomed?'zoom-out':'zoom-in';
+      this.style.width=zoomed?'min(900px,96vw)':'min(600px,82vw)';
+      this.style.height=zoomed?'min(1100px,88vh)':'min(780px,72vh)';
+      this.style.maxWidth='96vw';
+      this.style.maxHeight=zoomed?'88vh':'82vh';
+    });
+
+    if(closeTop) closeTop.addEventListener('click', closePhoto);
+    if(closeBottom) closeBottom.addEventListener('click', closePhoto);
+
+    modalEl.addEventListener('shown.bs.modal', resetPhoto);
+    modalEl.addEventListener('hidden.bs.modal', function(){
+      resetPhoto();
+      img.src='';
+    });
+
+    // Extra reliable close with Escape.
+    document.addEventListener('keydown', function(e){
+      if(e.key==='Escape' && modalEl.classList.contains('show')) closePhoto();
+    });
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', initCustomerPhotoViewer);
+  else initCustomerPhotoViewer();
+})();
+</script>
+<style>
+#customerPhotoViewModal .modal-content{max-height:94vh;}
+#customerPhotoViewModal .modal-body{overflow:auto;}
+#customerPhotoViewModal .modal-footer{border-top:1px solid #dee2e6;}
+#customerPhotoViewImage{transition:width .2s ease,height .2s ease,transform .2s ease;}
+</style>
+<script>
+document.addEventListener('click', function(e){
+  const img = e.target.closest && e.target.closest('.customer-photo-thumb');
+  if (!img) return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  const id = img.getAttribute('data-customer-id');
+  if (!id) return;
+  const customer = ((window.cscCustomerState && window.cscCustomerState.allCustomersData) || []).find(c => String(c.id) === String(id));
+  const src = customer && (customer.photoData || customer.photo || customer.photoUrl || customer.image);
+  const modalEl = document.getElementById('customerPhotoViewModal');
+  const viewImg = document.getElementById('customerPhotoViewImage');
+  if (!src || !modalEl || !viewImg) return;
+  viewImg.src = src;
+  viewImg.classList.remove('photo-zoomed');
+  viewImg.style.transform = 'scale(1)';
+  viewImg.style.width = 'min(600px,82vw)';
+  viewImg.style.height = 'min(780px,72vh)';
+  bootstrap.Modal.getOrCreateInstance(modalEl, {backdrop:true, keyboard:true}).show();
+}, true);
+</script>
+
+<script>
+</script>
+<style id="stylish-delete-dialogs">
+/* Modern confirmation + success dialogs */
+.stylish-dialog-backdrop{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.48);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);animation:sdFade .18s ease-out}
+.stylish-dialog{width:min(560px,94vw);background:linear-gradient(145deg,#fff 0%,#f8fbff 100%);border-radius:24px;overflow:hidden;box-shadow:0 28px 80px rgba(15,23,42,.28);border:1px solid rgba(255,255,255,.85);transform:translateY(0);animation:sdPop .22s cubic-bezier(.2,.8,.2,1)}
+.stylish-dialog.success{border:2px solid #22c55e}.stylish-dialog.danger{border:2px solid #ff3b4f}
+.stylish-dialog-top{height:205px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:linear-gradient(135deg,#fff1f2,#fff 65%)}
+.stylish-dialog.success .stylish-dialog-top{background:linear-gradient(135deg,#ecfdf3,#fff 65%)}
+.stylish-dialog-top:before,.stylish-dialog-top:after{content:"";position:absolute;border-radius:50%;filter:blur(1px)}
+.stylish-dialog-top:before{width:220px;height:110px;left:-45px;top:-35px;background:rgba(255,72,94,.10)}
+.stylish-dialog.success .stylish-dialog-top:before{background:rgba(34,197,94,.10)}
+.stylish-dialog-top:after{width:190px;height:100px;right:-35px;bottom:-45px;background:rgba(255,72,94,.08)}
+.stylish-dialog.success .stylish-dialog-top:after{background:rgba(34,197,94,.08)}
+.stylish-dialog-icon{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;position:relative;z-index:2;font-size:48px;color:#fff;box-shadow:0 12px 28px rgba(255,59,79,.28);background:linear-gradient(145deg,#ff4b5f,#e51d35);border:10px solid rgba(255,255,255,.72);outline:12px solid rgba(255,72,94,.08)}
+.stylish-dialog.success .stylish-dialog-icon{background:linear-gradient(145deg,#22c55e,#079447);box-shadow:0 12px 28px rgba(22,163,74,.28);outline-color:rgba(34,197,94,.09)}
+.stylish-dialog-body{text-align:center;padding:26px 30px 22px}.stylish-dialog-title{font-size:31px;font-weight:800;line-height:1.1;margin:0 0 12px;color:#dc2538}.stylish-dialog.success .stylish-dialog-title{color:#118443}.stylish-dialog-message{font-size:18px;color:#334155;line-height:1.5;margin:0 auto;max-width:470px}
+.stylish-dialog-actions{display:flex;gap:14px;padding:22px 30px 28px;border-top:1px solid #edf1f5;background:rgba(255,255,255,.76)}
+.stylish-dialog-btn{flex:1;border:0;border-radius:999px;padding:15px 22px;font-size:18px;font-weight:800;cursor:pointer;transition:.18s ease;display:flex;align-items:center;justify-content:center;gap:10px}
+.stylish-dialog-btn:hover{transform:translateY(-2px)}.stylish-dialog-btn.delete{color:#fff;background:linear-gradient(135deg,#ff3b4f,#e51d35);box-shadow:0 9px 22px rgba(239,68,68,.24)}.stylish-dialog-btn.cancel{color:#334155;background:#eef2f7}.stylish-dialog-btn.ok{color:#fff;background:linear-gradient(135deg,#22c55e,#0c8f45);box-shadow:0 9px 22px rgba(22,163,74,.24)}
+@keyframes sdFade{from{opacity:0}to{opacity:1}}@keyframes sdPop{from{opacity:0;transform:scale(.94) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.password-dialog{border:2px solid #f45100}.password-top{background:linear-gradient(135deg,#fff7ed,#fff 65%)!important}.password-icon{background:linear-gradient(145deg,#ff7a18,#f45100)!important;box-shadow:0 12px 28px rgba(244,81,0,.28)!important;outline-color:rgba(244,81,0,.10)!important}.password-title{color:#d94801!important}.password-field-wrap{position:relative;max-width:470px;margin:20px auto 2px}.stylish-password-input{width:100%;height:58px;border:2px solid #e5e7eb;border-radius:15px;background:#fff;padding:0 52px 0 48px;font-size:17px;font-weight:600;color:#172033;outline:none;box-shadow:0 5px 16px rgba(15,23,42,.07);transition:.18s ease}.stylish-password-input:focus{border-color:#f45100;box-shadow:0 0 0 4px rgba(244,81,0,.10),0 7px 18px rgba(15,23,42,.08)}.stylish-password-input::placeholder{color:#9aa4b2;font-weight:500}.password-key{position:absolute;left:17px;top:20px;color:#f45100;font-size:18px;z-index:2}.password-toggle{position:absolute;right:8px;top:8px;width:42px;height:42px;border:0;border-radius:11px;background:#fff3e8;color:#f45100;cursor:pointer;font-size:16px}.password-toggle:hover{background:#ffe4cf}.password-submit{background:linear-gradient(135deg,#ff6a00,#e84b00)!important}.password-cancel{flex:0 0 140px!important}@media(max-width:520px){.password-field-wrap{margin-top:16px}.password-cancel{flex:1!important}}
+@media(max-width:520px){.stylish-dialog-top{height:155px}.stylish-dialog-icon{width:82px;height:82px;font-size:36px;border-width:8px}.stylish-dialog-title{font-size:25px}.stylish-dialog-message{font-size:16px}.stylish-dialog-actions{padding:18px;gap:10px}.stylish-dialog-btn{font-size:16px;padding:13px 12px}}
+</style>
+<script id="stylish-delete-dialogs-script">
+(function(){
+  function removeDialog(el){ if(el && el.parentNode) el.parentNode.removeChild(el); }
+  window.showStyledConfirm = function(message){
+    return new Promise(function(resolve){
+      var backdrop=document.createElement('div'); backdrop.className='stylish-dialog-backdrop';
+      backdrop.innerHTML='<div class="stylish-dialog danger" role="dialog" aria-modal="true" aria-labelledby="sdConfirmTitle">'
+        +'<div class="stylish-dialog-top"><div class="stylish-dialog-icon"><i class="fas fa-trash-alt"></i></div></div>'
+        +'<div class="stylish-dialog-body"><h3 class="stylish-dialog-title" id="sdConfirmTitle">Delete Customer?</h3><p class="stylish-dialog-message"></p></div>'
+        +'<div class="stylish-dialog-actions"><button type="button" class="stylish-dialog-btn delete"><i class="fas fa-trash-alt"></i> Delete</button><button type="button" class="stylish-dialog-btn cancel"><i class="fas fa-times"></i> Cancel</button></div></div>';
+      backdrop.querySelector('.stylish-dialog-message').textContent=message;
+      var finish=function(value){removeDialog(backdrop);resolve(value)};
+      backdrop.querySelector('.delete').onclick=function(){finish(true)};
+      backdrop.querySelector('.cancel').onclick=function(){finish(false)};
+      backdrop.addEventListener('click',function(e){if(e.target===backdrop) finish(false)});
+      document.body.appendChild(backdrop);
+      var btn=backdrop.querySelector('.delete'); if(btn) btn.focus();
+    });
+  };
+  window.showStyledPassword = function(message){
+    return new Promise(function(resolve){
+      var backdrop=document.createElement('div'); backdrop.className='stylish-dialog-backdrop';
+      backdrop.innerHTML='<div class="stylish-dialog password-dialog" role="dialog" aria-modal="true" aria-labelledby="sdPasswordTitle">'
+        +'<div class="stylish-dialog-top password-top"><div class="stylish-dialog-icon password-icon"><i class="fas fa-lock"></i></div></div>'
+        +'<div class="stylish-dialog-body"><h3 class="stylish-dialog-title password-title" id="sdPasswordTitle">Admin Verification</h3><p class="stylish-dialog-message"></p><div class="password-field-wrap"><i class="fas fa-key password-key"></i><input type="password" class="stylish-password-input" autocomplete="off" placeholder="Enter admin password" aria-label="Admin password"><button type="button" class="password-toggle" aria-label="Show password"><i class="fas fa-eye"></i></button></div></div>'
+        +'<div class="stylish-dialog-actions"><button type="button" class="stylish-dialog-btn delete password-submit"><i class="fas fa-shield-halved"></i> Verify & Delete</button><button type="button" class="stylish-dialog-btn cancel password-cancel"><i class="fas fa-times"></i> Cancel</button></div></div>';
+      backdrop.querySelector('.stylish-dialog-message').textContent=message;
+      var input=backdrop.querySelector('.stylish-password-input');
+      var finish=function(value){removeDialog(backdrop);resolve(value)};
+      backdrop.querySelector('.password-submit').onclick=function(){finish(input.value)};
+      backdrop.querySelector('.password-cancel').onclick=function(){finish(null)};
+      backdrop.addEventListener('click',function(e){if(e.target===backdrop) finish(null)});
+      backdrop.querySelector('.password-toggle').onclick=function(){
+        var hidden=input.type==='password'; input.type=hidden?'text':'password';
+        this.innerHTML='<i class="fas fa-'+(hidden?'eye-slash':'eye')+'"></i>';
+      };
+      input.addEventListener('keydown',function(e){if(e.key==='Enter') backdrop.querySelector('.password-submit').click(); if(e.key==='Escape') finish(null)});
+      document.body.appendChild(backdrop);
+      setTimeout(function(){input.focus()},40);
+    });
+  };
+
+  window.showStyledResult = function(message,type){
+    return new Promise(function(resolve){
+      var success=type==='success';
+      var backdrop=document.createElement('div'); backdrop.className='stylish-dialog-backdrop';
+      backdrop.innerHTML='<div class="stylish-dialog '+(success?'success':'danger')+'" role="dialog" aria-modal="true">'
+        +'<div class="stylish-dialog-top"><div class="stylish-dialog-icon"><i class="fas '+(success?'fa-check':'fa-exclamation')+'"></i></div></div>'
+        +'<div class="stylish-dialog-body"><h3 class="stylish-dialog-title">'+(success?'Success!':'Something went wrong')+'</h3><p class="stylish-dialog-message"></p></div>'
+        +'<div class="stylish-dialog-actions"><button type="button" class="stylish-dialog-btn '+(success?'ok':'delete')+'"><i class="fas '+(success?'fa-check':'fa-times')+'"></i> OK</button></div></div>';
+      backdrop.querySelector('.stylish-dialog-message').textContent=message;
+      var finish=function(){removeDialog(backdrop);resolve(true)};
+      backdrop.querySelector('button').onclick=finish;
+      backdrop.addEventListener('click',function(e){if(e.target===backdrop) finish()});
+      document.body.appendChild(backdrop); backdrop.querySelector('button').focus();
+    });
+  };
+})();
+</script>
+
+<script id="all-forms-strict-name-mobile-validation">
+(function () {
+  function getFieldText(el) {
+    const label = el.id ? document.querySelector('label[for="' + CSS.escape(el.id) + '"]') : null;
+    return [
+      el.id || '',
+      el.name || '',
+      el.placeholder || '',
+      el.getAttribute('aria-label') || '',
+      label ? label.textContent : ''
+    ].join(' ').toLowerCase();
+  }
+
+  function isNameField(el) {
+    const t = getFieldText(el);
+    return /\b(full\s*name|customer\s*name|applicant\s*name|name|father\s*\/?\s*husband\s*name|father\s*name|husband\s*name)\b/i.test(t);
+  }
+
+  function isMobileField(el) {
+    const t = getFieldText(el);
+    return /\b(mobile|mobile\s*number|phone|phone\s*number|contact\s*number)\b/i.test(t);
+  }
+
+  function cleanName(value) {
+    return String(value || '')
+      .replace(/[^\p{L}\s]/gu, '')
+      .replace(/\s{2,}/g, ' ');
+  }
+
+  function cleanMobile(value) {
+    let v = String(value || '').replace(/\D/g, '').slice(0, 10);
+    if (v && !/^[6-9]/.test(v)) v = '';
+    return v;
+  }
+
+  function attach(el) {
+    if (!el || el.dataset.strictValidationAttached === '1') return;
+    if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') return;
+    if (el.type === 'file' || el.type === 'hidden') return;
+
+    if (!isNameField(el) && !isMobileField(el)) return;
+    el.dataset.strictValidationAttached = '1';
+
+    const nameField = isNameField(el);
+    const mobileField = !nameField && isMobileField(el);
+
+    el.addEventListener('beforeinput', function (e) {
+      if (e.inputType === 'insertText' || e.inputType === 'insertCompositionText') {
+        const data = e.data || '';
+        if (nameField && /[^\p{L}\s]/u.test(data)) e.preventDefault();
+        if (mobileField && /\D/.test(data)) e.preventDefault();
+      }
+    });
+
+    el.addEventListener('keydown', function (e) {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key.length !== 1) return;
+
+      if (nameField && !/[\p{L}\s]/u.test(e.key)) e.preventDefault();
+      if (mobileField && !/\d/.test(e.key)) e.preventDefault();
+    });
+
+    el.addEventListener('input', function () {
+      const old = this.value;
+      const next = nameField ? cleanName(old) : cleanMobile(old);
+      if (old !== next) {
+        this.value = next;
+        this.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+
+    el.addEventListener('paste', function (e) {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text');
+      const cleaned = nameField ? cleanName(text) : cleanMobile(text);
+      const start = this.selectionStart ?? this.value.length;
+      const end = this.selectionEnd ?? this.value.length;
+      this.setRangeText(cleaned, start, end, 'end');
+      this.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    // Final protection for autofill / programmatic values.
+    el.addEventListener('change', function () {
+      this.value = nameField ? cleanName(this.value) : cleanMobile(this.value);
+    });
+  }
+
+  function scan() {
+    document.querySelectorAll('input, textarea').forEach(attach);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', scan);
+  } else {
+    scan();
+  }
+
+  // Also cover forms/modals added dynamically.
+  new MutationObserver(scan).observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
 })();
 </script>
 
