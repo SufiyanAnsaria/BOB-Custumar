@@ -1013,6 +1013,195 @@ header .site-subtitle {
 }
 </style>
 
+
+<style id="real-csc-service-logos">
+  /* CSC Services - compact single-row layout */
+  .services-wrapper{
+    display:grid !important;
+    grid-template-columns:repeat(8,minmax(0,1fr)) !important;
+    gap:10px !important;
+    overflow:visible !important;
+    padding:8px 0 12px !important;
+  }
+
+  .real-service-card{
+    min-width:0 !important;
+    height:185px !important;
+    padding:8px 5px 9px !important;
+    background:#fff !important;
+    border:2px solid #e7ebf0 !important;
+    border-radius:10px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    text-align:center !important;
+    cursor:pointer !important;
+    transition:all .2s ease !important;
+    box-shadow:0 3px 9px rgba(0,0,0,.05) !important;
+    overflow:hidden !important;
+  }
+
+  .real-service-card:hover{
+    transform:translateY(-3px) !important;
+    border-color:#f45100 !important;
+    box-shadow:0 7px 16px rgba(0,0,0,.10) !important;
+  }
+
+  .real-service-card .service-logo-wrap{
+    width:100% !important;
+    height:135px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    background:#fff !important;
+    border-radius:7px !important;
+    overflow:hidden !important;
+  }
+
+  .real-service-card img.service-logo{
+    width:78% !important;
+    height:78% !important;
+    max-width:125px !important;
+    max-height:105px !important;
+    object-fit:contain !important;
+    display:block !important;
+  }
+
+  .real-service-card .service-name{
+    width:100% !important;
+    min-height:27px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size:.78rem !important;
+    line-height:1.05 !important;
+    font-weight:800 !important;
+    color:#172033 !important;
+    white-space:nowrap !important;
+  }
+
+  /* Keep all 8 cards on one line on desktop */
+  @media(min-width:992px){
+    .services-wrapper{
+      grid-template-columns:repeat(8,1fr) !important;
+    }
+    .real-service-card{
+      height:185px !important;
+    }
+  }
+
+  @media(max-width:991px){
+    .services-wrapper{
+      grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    }
+  }
+
+  @media(max-width:600px){
+    .services-wrapper{
+      grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+      gap:8px !important;
+    }
+    .real-service-card{
+      height:165px !important;
+    }
+    .real-service-card .service-logo-wrap{
+      height:120px !important;
+    }
+    .real-service-card img.service-logo{
+      width:75% !important;
+      height:75% !important;
+      max-width:100px !important;
+      max-height:85px !important;
+    }
+    .real-service-card .service-name{
+      font-size:.72rem !important;
+    }
+  }
+</style>
+
+
+<style id="new-application-real-logos">
+  #serviceSelectionModal .modal-dialog{max-width:900px;}
+  #serviceSelectionModal .new-app-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+  }
+  #serviceSelectionModal .new-app-service{
+    min-height:125px;
+    border:1px solid #e2e8ef;
+    border-radius:12px;
+    background:#fff;
+    padding:10px 7px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    text-align:center;
+    transition:.2s ease;
+    cursor:pointer;
+  }
+  #serviceSelectionModal .new-app-service:hover{
+    border-color:#f45100;
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px rgba(0,0,0,.10);
+  }
+  #serviceSelectionModal .new-app-service img{
+    width:82px;
+    height:72px;
+    object-fit:contain;
+    display:block;
+  }
+  #serviceSelectionModal .new-app-service span{
+    font-size:.82rem;
+    line-height:1.05;
+    font-weight:800;
+    color:#172033;
+  }
+  @media(max-width:600px){
+    #serviceSelectionModal .new-app-grid{grid-template-columns:repeat(2,1fr);gap:9px;}
+    #serviceSelectionModal .new-app-service{min-height:110px;}
+    #serviceSelectionModal .new-app-service img{width:68px;height:58px;}
+    #serviceSelectionModal .new-app-service span{font-size:.72rem;}
+  }
+</style>
+
+
+<style id="service-form-logo-headers">
+  /* Every service form: header contains only that service's own logo */
+  .service-modal-brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+  }
+  .service-modal-brand img{
+    width:86px;
+    height:52px;
+    object-fit:contain;
+    background:#fff;
+    border-radius:7px;
+    padding:3px;
+    display:block;
+    flex:0 0 auto;
+  }
+  .service-modal-brand .modal-title{
+    margin:0;
+    font-weight:800;
+  }
+  @media(max-width:576px){
+    .service-modal-brand img{
+      width:70px;
+      height:44px;
+    }
+    .service-modal-brand .modal-title{
+      font-size:1rem;
+    }
+  }
+</style>
+
 </head>
 <body>
   <!-- Login Modal -->
@@ -1179,37 +1368,60 @@ header .site-subtitle {
       </div>
       <div class="card-body">
         <div class="services-wrapper">
-          <div class="service-card" onclick="openPassportForm()">
-            <i class="fas fa-passport"></i>
-            <span>PASSPORT</span>
+          <div class="service-card real-service-card" onclick="openPassportForm()">
+            <div class="service-logo-wrap">
+              <img class="service-logo" src="https://iili.io/noWdm2p.jpg" alt="Passport Seva Logo" loading="lazy">
+            </div>
+            <div class="service-name">PASSPORT</div>
           </div>
-          <div class="service-card" onclick="openEPFOForm()">
-            <i class="fas fa-file-invoice"></i>
-            <span>EPFO</span>
+
+          <div class="service-card real-service-card" onclick="openEPFOForm()">
+            <div class="service-logo-wrap">
+              <img class="service-logo" src="https://iili.io/noW3uRI.jpg" alt="EPFO Logo" loading="lazy">
+            </div>
+            <div class="service-name">EPFO</div>
           </div>
-          <div class="service-card" onclick="openAadhaarForm()">
-            <i class="fas fa-id-card"></i>
-            <span>AADHAAR</span>
+
+          <div class="service-card real-service-card" onclick="openAadhaarForm()">
+            <div class="service-logo-wrap">
+              <img class="service-logo" src="https://iili.io/noWFX7p.jpg" alt="Aadhaar Logo" loading="lazy">
+            </div>
+            <div class="service-name">AADHAAR</div>
           </div>
-          <div class="service-card" onclick="openPANForm()">
-            <i class="fas fa-credit-card"></i>
-            <span>PAN CARD</span>
+
+          <div class="service-card real-service-card" onclick="openPANForm()">
+            <div class="service-logo-wrap">
+              <img class="service-logo" src="https://iili.io/noX3TpS.jpg" alt="PAN Card Logo" loading="lazy">
+            </div>
+            <div class="service-name">PAN CARD</div>
           </div>
-          <div class="service-card" onclick="openESarvishForm()">
-            <i class="fas fa-globe"></i>
-            <span>eSARVISH</span>
+
+          <div class="service-card real-service-card" onclick="openESarvishForm()">
+            <div class="service-logo-wrap">
+              <img class="service-logo" src="https://iili.io/noWUHtn.jpg" alt="eSarvish Logo" loading="lazy">
+            </div>
+            <div class="service-name">eSARVISH</div>
           </div>
-          <div class="service-card" onclick="openLicenseForm()">
-            <i class="fas fa-id-card-alt"></i>
-            <span>DRIVING LICENSE</span>
+
+          <div class="service-card real-service-card" onclick="openLicenseForm()">
+            <div class="service-logo-wrap">
+              <img class="service-logo" src="https://iili.io/noXn9oB.png" alt="Driving License / Parivahan Logo" loading="lazy">
+            </div>
+            <div class="service-name">DRIVING LICENSE</div>
           </div>
-          <div class="service-card" onclick="openBOBAccountForm()">
-            <i class="fas fa-university"></i>
-            <span>BOB ACCOUNT</span>
+
+          <div class="service-card real-service-card" onclick="openBOBAccountForm()">
+            <div class="service-logo-wrap">
+              <img class="service-logo" src="https://iili.io/noWqtGn.png" alt="Bank of Baroda Logo" loading="lazy">
+            </div>
+            <div class="service-name">BOB ACCOUNT</div>
           </div>
-          <div class="service-card" onclick="openPNBAccountForm()">
-            <i class="fas fa-university"></i>
-            <span>PNB ACCOUNT</span>
+
+          <div class="service-card real-service-card" onclick="openPNBAccountForm()">
+            <div class="service-logo-wrap">
+              <img class="service-logo" src="https://iili.io/noXoc7a.jpg" alt="Punjab National Bank Logo" loading="lazy">
+            </div>
+            <div class="service-name">PNB ACCOUNT</div>
           </div>
         </div>
       </div>
@@ -1370,9 +1582,12 @@ header .site-subtitle {
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="passportModalLabel"><i class="fas fa-passport me-2"></i>Passport Application</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+      <div class="service-modal-brand">
+        <img src="https://iili.io/noWdm2p.jpg" alt="PASSPORT Logo" loading="lazy">
+        <h5 class="modal-title">Passport Application</h5>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
         <div class="modal-body">
           <form id="passportForm">
             <h6 class="text-pnb-primary mb-3">Applicant Details</h6>
@@ -1435,9 +1650,12 @@ header .site-subtitle {
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="epfoModalLabel"><i class="fas fa-file-invoice me-2"></i>EPFO Application</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+      <div class="service-modal-brand">
+        <img src="https://iili.io/noW3uRI.jpg" alt="EPFO Logo" loading="lazy">
+        <h5 class="modal-title">EPFO Application</h5>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
         <div class="modal-body">
           <form id="epfoForm">
             <h6 class="text-pnb-primary mb-3">Applicant Details</h6>
@@ -1483,9 +1701,12 @@ header .site-subtitle {
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="aadhaarModalLabel"><i class="fas fa-id-card me-2"></i>Aadhaar Application</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+      <div class="service-modal-brand">
+        <img src="https://iili.io/noWFX7p.jpg" alt="AADHAAR Logo" loading="lazy">
+        <h5 class="modal-title">Aadhaar Application</h5>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
         <div class="modal-body">
           <form id="aadhaarForm">
             <h6 class="text-pnb-primary mb-3">Applicant Details</h6>
@@ -1526,9 +1747,12 @@ header .site-subtitle {
   <div class="modal fade" id="panModal" tabindex="-1" aria-labelledby="panModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg"><div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="panModalLabel"><i class="fas fa-credit-card me-2"></i>PAN Card Application</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="service-modal-brand">
+        <img src="https://iili.io/noX3TpS.jpg" alt="PAN CARD Logo" loading="lazy">
+        <h5 class="modal-title">PAN Card Application</h5>
       </div>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
       <div class="modal-body">
         <form id="panForm">
           <h6 class="text-pnb-primary mb-3">Applicant Details</h6>
@@ -1559,9 +1783,12 @@ header .site-subtitle {
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="esarvishModalLabel"><i class="fas fa-globe me-2"></i>eSarvish Application</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+      <div class="service-modal-brand">
+        <img src="https://iili.io/noWUHtn.jpg" alt="eSARVISH Logo" loading="lazy">
+        <h5 class="modal-title">eSarvish Application</h5>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
         <div class="modal-body">
           <form id="esarvishForm">
             <h6 class="text-pnb-primary mb-3">Applicant Details</h6>
@@ -1618,9 +1845,12 @@ header .site-subtitle {
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="licenseModalLabel"><i class="fas fa-id-card-alt me-2"></i>Driving License Application</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+      <div class="service-modal-brand">
+        <img src="https://iili.io/noXn9oB.png" alt="DRIVING LICENSE Logo" loading="lazy">
+        <h5 class="modal-title">Driving License Application</h5>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
         <div class="modal-body">
           <form id="licenseForm">
             <h6 class="text-pnb-primary mb-3">Applicant Details</h6>
@@ -1683,9 +1913,12 @@ header .site-subtitle {
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="pnbAccountModalLabel"><i class="fas fa-university me-2"></i>PNB Account Customer</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+      <div class="service-modal-brand">
+        <img src="https://iili.io/noXoc7a.jpg" alt="PNB ACCOUNT Logo" loading="lazy">
+        <h5 class="modal-title">PNB Account Customer</h5>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
         <div class="modal-body">
           <form id="pnbAccountForm">
             <h6 class="text-pnb-primary mb-3">Customer Details</h6>
@@ -1732,9 +1965,12 @@ header .site-subtitle {
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="bobAccountModalLabel"><i class="fas fa-university me-2"></i>BOB Account Customer</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+      <div class="service-modal-brand">
+        <img src="https://iili.io/noWqtGn.png" alt="BOB ACCOUNT Logo" loading="lazy">
+        <h5 class="modal-title">BOB Account Customer</h5>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
         <div class="modal-body">
           <form id="bobAccountForm">
             <h6 class="text-pnb-primary mb-3">Customer Details</h6>
@@ -1958,34 +2194,42 @@ header .site-subtitle {
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="serviceSelectionModalLabel"><i class="fas fa-plus-circle me-2"></i>Select Service</h5>
+          <h5 class="modal-title" id="serviceSelectionModalLabel"><i class="fas fa-plus-circle me-2"></i>New Application</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div class="list-group">
-            <button type="button" class="list-group-item list-group-item-action" onclick="openPassportForm()">
-              <i class="fas fa-passport me-2" style="color: #2563eb;"></i> Passport Application
+          <div class="new-app-grid">
+            <button type="button" class="new-app-service" onclick="openPassportForm()">
+              <img src="https://iili.io/noWdm2p.jpg" alt="Passport Logo" loading="lazy">
+              <span>PASSPORT</span>
             </button>
-            <button type="button" class="list-group-item list-group-item-action" onclick="openEPFOForm()">
-              <i class="fas fa-file-invoice me-2" style="color: #7c3aed;"></i> EPFO Application
+            <button type="button" class="new-app-service" onclick="openEPFOForm()">
+              <img src="https://iili.io/noW3uRI.jpg" alt="EPFO Logo" loading="lazy">
+              <span>EPFO</span>
             </button>
-            <button type="button" class="list-group-item list-group-item-action" onclick="openAadhaarForm()">
-              <i class="fas fa-id-card me-2" style="color: #dc2626;"></i> Aadhaar Application
+            <button type="button" class="new-app-service" onclick="openAadhaarForm()">
+              <img src="https://iili.io/noWFX7p.jpg" alt="Aadhaar Logo" loading="lazy">
+              <span>AADHAAR</span>
             </button>
-            <button type="button" class="list-group-item list-group-item-action" onclick="openPANForm()">
-              <i class="fas fa-credit-card me-2" style="color: #ea580c;"></i> PAN Card Application
+            <button type="button" class="new-app-service" onclick="openPANForm()">
+              <img src="https://iili.io/noX3TpS.jpg" alt="PAN Card Logo" loading="lazy">
+              <span>PAN CARD</span>
             </button>
-            <button type="button" class="list-group-item list-group-item-action" onclick="openESarvishForm()">
-              <i class="fas fa-globe me-2" style="color: #0891b2;"></i> eSarvish Application
+            <button type="button" class="new-app-service" onclick="openESarvishForm()">
+              <img src="https://iili.io/noWUHtn.jpg" alt="eSarvish Logo" loading="lazy">
+              <span>eSARVISH</span>
             </button>
-            <button type="button" class="list-group-item list-group-item-action" onclick="openLicenseForm()">
-              <i class="fas fa-id-card-alt me-2" style="color: #16a34a;"></i> Driving License Application
+            <button type="button" class="new-app-service" onclick="openLicenseForm()">
+              <img src="https://iili.io/noXn9oB.png" alt="Driving License Logo" loading="lazy">
+              <span>DRIVING LICENSE</span>
             </button>
-            <button type="button" class="list-group-item list-group-item-action" onclick="openPNBAccountForm()">
-              <i class="fas fa-university me-2" style="color: #0066A1;"></i> PNB Account Customer
+            <button type="button" class="new-app-service" onclick="openBOBAccountForm()">
+              <img src="https://iili.io/noWqtGn.png" alt="Bank of Baroda Logo" loading="lazy">
+              <span>BOB ACCOUNT</span>
             </button>
-            <button type="button" class="list-group-item list-group-item-action" onclick="openBOBAccountForm()">
-              <i class="fas fa-university me-2" style="color: #0066a1;"></i> BOB Account Customer
+            <button type="button" class="new-app-service" onclick="openPNBAccountForm()">
+              <img src="https://iili.io/noXoc7a.jpg" alt="Punjab National Bank Logo" loading="lazy">
+              <span>PNB ACCOUNT</span>
             </button>
           </div>
         </div>
