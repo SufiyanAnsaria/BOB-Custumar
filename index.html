@@ -1202,6 +1202,306 @@ header .site-subtitle {
   }
 </style>
 
+
+<style id="live-header-clock">
+  /* Live clock shown in every service-form header */
+  .service-modal-header-clock{
+    margin-left:auto;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    justify-content:center;
+    line-height:1.05;
+    white-space:nowrap;
+    padding:0 12px;
+  }
+  .service-modal-header-clock .live-label{
+    font-size:.68rem;
+    font-weight:700;
+    opacity:.9;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+  }
+  .service-modal-header-clock .live-time{
+    font-size:1rem;
+    font-weight:800;
+    letter-spacing:.4px;
+  }
+  .service-modal-header-clock .live-date{
+    font-size:.68rem;
+    opacity:.9;
+    margin-top:3px;
+  }
+  @media(max-width:576px){
+    .service-modal-header-clock{
+      padding:0 5px;
+    }
+    .service-modal-header-clock .live-label,
+    .service-modal-header-clock .live-date{
+      display:none;
+    }
+    .service-modal-header-clock .live-time{
+      font-size:.82rem;
+    }
+  }
+</style>
+<script id="live-header-clock-script">
+(function(){
+  function updateServiceHeaderClock(){
+    const now = new Date();
+    const time = now.toLocaleTimeString('en-IN', {
+      hour:'2-digit', minute:'2-digit', second:'2-digit',
+      hour12:true
+    });
+    const date = now.toLocaleDateString('en-IN', {
+      day:'2-digit', month:'short', year:'numeric'
+    });
+    document.querySelectorAll('.service-modal-header-clock').forEach(function(el){
+      const t = el.querySelector('.live-time');
+      const d = el.querySelector('.live-date');
+      if(t) t.textContent = time;
+      if(d) d.textContent = date;
+    });
+  }
+  window.updateServiceHeaderClock = updateServiceHeaderClock;
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){
+      updateServiceHeaderClock();
+      setInterval(updateServiceHeaderClock, 1000);
+    });
+  }else{
+    updateServiceHeaderClock();
+    setInterval(updateServiceHeaderClock, 1000);
+  }
+})();
+</script>
+
+
+<style id="main-home-header-live-time">
+  .home-header-live-time{
+    margin-left:auto;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    justify-content:center;
+    line-height:1.05;
+    color:#fff;
+    white-space:nowrap;
+    padding-right:12px;
+  }
+  .home-header-live-time .live-label{
+    font-size:.62rem;
+    font-weight:800;
+    letter-spacing:.6px;
+    opacity:.92;
+  }
+  .home-header-live-time .live-clock{
+    font-size:1rem;
+    font-weight:900;
+    letter-spacing:.3px;
+  }
+  .home-header-live-time .live-date{
+    font-size:.62rem;
+    opacity:.9;
+    margin-top:2px;
+  }
+  @media(max-width:600px){
+    .home-header-live-time{padding-right:5px;}
+    .home-header-live-time .live-date{display:none;}
+    .home-header-live-time .live-clock{font-size:.78rem;}
+    .home-header-live-time .live-label{font-size:.52rem;}
+  }
+</style>
+<script id="main-home-header-live-time-script">
+(function(){
+  function updateHomeHeaderClock(){
+    const now = new Date();
+    const time = now.toLocaleTimeString('en-IN', {
+      hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true
+    });
+    const date = now.toLocaleDateString('en-IN', {
+      day:'2-digit', month:'short', year:'numeric'
+    });
+    document.querySelectorAll('.home-header-live-time').forEach(function(el){
+      const clock = el.querySelector('.live-clock');
+      const dateEl = el.querySelector('.live-date');
+      if(clock) clock.textContent = time;
+      if(dateEl) dateEl.textContent = date;
+    });
+  }
+  function startHomeHeaderClock(){
+    updateHomeHeaderClock();
+    setInterval(updateHomeHeaderClock, 1000);
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', startHomeHeaderClock);
+  }else{
+    startHomeHeaderClock();
+  }
+})();
+</script>
+
+
+<style id="compact-service-filter-bar">
+  .search-filters{
+    background:#f7f9fc !important;
+    border:1px solid #dfe7ef !important;
+    border-radius:9px !important;
+    padding:8px 10px !important;
+    margin-bottom:18px !important;
+  }
+
+  .filter-service-toggle{
+    width:auto !important;
+    min-width:220px !important;
+    flex:0 0 auto !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:12px !important;
+    border:0 !important;
+    background:transparent !important;
+    padding:4px 8px !important;
+    margin:0 !important;
+    font-weight:800 !important;
+    font-size:.92rem !important;
+    color:#18324d !important;
+    cursor:pointer !important;
+  }
+
+  .filter-service-toggle span{
+    white-space:nowrap !important;
+  }
+
+  .service-filter-options{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    gap:6px !important;
+    padding:0 !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    scrollbar-width:none !important;
+  }
+  .service-filter-options::-webkit-scrollbar{display:none;}
+
+  .compact-filter-row{
+    display:flex !important;
+    align-items:center !important;
+    width:100% !important;
+    gap:4px !important;
+    min-width:0 !important;
+  }
+
+  .compact-filter-item{
+    flex:0 0 auto !important;
+    height:38px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:7px !important;
+    padding:4px 10px !important;
+    border:1px solid #d9e2ec !important;
+    background:#fff !important;
+    border-radius:19px !important;
+    color:#17304b !important;
+    font-size:.72rem !important;
+    font-weight:700 !important;
+    white-space:nowrap !important;
+    cursor:pointer !important;
+    transition:.18s ease !important;
+  }
+
+  .compact-filter-item:hover{
+    transform:translateY(-1px) !important;
+    border-color:#f45100 !important;
+    box-shadow:0 3px 9px rgba(0,0,0,.08) !important;
+  }
+
+  .compact-filter-item.active{
+    background:#f45100 !important;
+    color:#fff !important;
+    border-color:#f45100 !important;
+  }
+
+  .compact-filter-item.all-in-one{
+    background:#49b900 !important;
+    border-color:#49b900 !important;
+    color:#fff !important;
+    padding-left:14px !important;
+    padding-right:14px !important;
+  }
+
+  .compact-filter-item img{
+    width:30px !important;
+    height:27px !important;
+    object-fit:contain !important;
+    display:block !important;
+    background:#fff !important;
+    border-radius:5px !important;
+    padding:2px !important;
+  }
+
+  .compact-filter-item .all-icon{
+    width:18px !important;
+    height:18px !important;
+    border-radius:4px !important;
+    display:grid !important;
+    place-items:center !important;
+    font-size:.75rem !important;
+    background:rgba(255,255,255,.15) !important;
+  }
+
+  .compact-filter-item .filter-text{
+    display:inline-block !important;
+  }
+
+  @media(max-width:991px){
+    .filter-service-toggle{
+      min-width:170px !important;
+      font-size:.82rem !important;
+    }
+  }
+
+  @media(max-width:700px){
+    .compact-filter-row{
+      align-items:flex-start !important;
+    }
+    .filter-service-toggle{
+      min-width:135px !important;
+      font-size:.75rem !important;
+      padding-left:2px !important;
+      padding-right:4px !important;
+    }
+    .compact-filter-item{
+      height:34px !important;
+      font-size:.66rem !important;
+      padding:3px 8px !important;
+    }
+    .compact-filter-item img{
+      width:25px !important;
+      height:23px !important;
+    }
+  }
+</style>
+
+
+<style id="hide-filter-by-service-label">
+  .filter-service-toggle{
+    min-width:30px !important;
+    width:30px !important;
+    padding:4px !important;
+    justify-content:center !important;
+    flex:0 0 30px !important;
+  }
+  .filter-service-toggle .filter-service-label-hidden{
+    display:none !important;
+  }
+  .filter-service-toggle .filter-chevron{
+    margin:0 !important;
+  }
+</style>
+
 </head>
 <body>
   <!-- Login Modal -->
@@ -1244,7 +1544,13 @@ header .site-subtitle {
       </a>
       <div class="three-dots-menu">
         <div class="dropdown">
-          <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+          
+      <div class="home-header-live-time" aria-label="Live date and time">
+        <div class="live-label">LIVE TIME</div>
+        <div class="live-clock">--:--:--</div>
+        <div class="live-date">-- --- ----</div>
+      </div>
+    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-cog"></i> Menu
           </button>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
@@ -1440,38 +1746,67 @@ header .site-subtitle {
       </div>
       <div class="card-body">
         <div class="search-filters">
-          <button type="button" id="filterServiceToggle" class="filter-service-toggle" aria-expanded="false">
-            <span><i class="fas fa-filter me-2"></i>Filter by Service:</span>
-            <i class="fas fa-chevron-down filter-chevron"></i>
-          </button>
-          <div id="serviceFilterOptions" class="service-filter-options d-none">
-            <span class="filter-badge all-customers" onclick="filterByService('all')">
-              <i class="fas fa-users"></i> All Customers
-            </span>
-            <span class="filter-badge passport" onclick="filterByService('passport')">
-              <i class="fas fa-passport"></i> Passport
-            </span>
-            <span class="filter-badge epfo" onclick="filterByService('epfo')">
-              <i class="fas fa-file-invoice"></i> EPFO
-            </span>
-            <span class="filter-badge aadhaar" onclick="filterByService('aadhaar')">
-              <i class="fas fa-id-card"></i> Aadhaar
-            </span>
-            <span class="filter-badge pan" onclick="filterByService('pan')">
-              <i class="fas fa-credit-card"></i> PAN Card
-            </span>
-            <span class="filter-badge esarvish" onclick="filterByService('esarvish')">
-              <i class="fas fa-globe"></i> eSarvish
-            </span>
-            <span class="filter-badge license" onclick="filterByService('license')">
-              <i class="fas fa-id-card-alt"></i> Driving License
-            </span>
-            <span class="filter-badge bob-account" onclick="filterByService('bob_account')">
-              <i class="fas fa-university"></i> BOB Account
-            </span>
-            <span class="filter-badge pnb-account" onclick="filterByService('pnb_account')">
-              <i class="fas fa-university"></i> PNB Account
-            </span>
+          <div class="compact-filter-row">
+            <button type="button" id="filterServiceToggle" class="filter-service-toggle" aria-expanded="true">
+              <span class="filter-service-label-hidden" aria-hidden="true"></span>
+              <i class="fas fa-chevron-up filter-chevron"></i>
+            </button>
+
+            <div id="serviceFilterOptions" class="service-filter-options">
+              <span class="filter-badge compact-filter-item all-customers all-in-one active"
+                    onclick="filterByService('all')" title="All in One">
+                <span class="all-icon"><i class="fas fa-th-large"></i></span>
+                <span class="filter-text">All in One</span>
+              </span>
+
+              <span class="filter-badge compact-filter-item pnb-account"
+                    onclick="filterByService('pnb_account')" title="PNB Account">
+                <img src="https://iili.io/noXoc7a.jpg" alt="PNB Logo" loading="lazy">
+                <span class="filter-text">PNB Account</span>
+              </span>
+
+              <span class="filter-badge compact-filter-item passport"
+                    onclick="filterByService('passport')" title="Passport">
+                <img src="https://iili.io/noWdm2p.jpg" alt="Passport Logo" loading="lazy">
+                <span class="filter-text">Passport</span>
+              </span>
+
+              <span class="filter-badge compact-filter-item epfo"
+                    onclick="filterByService('epfo')" title="EPFO">
+                <img src="https://iili.io/noW3uRI.jpg" alt="EPFO Logo" loading="lazy">
+                <span class="filter-text">EPFO</span>
+              </span>
+
+              <span class="filter-badge compact-filter-item aadhaar"
+                    onclick="filterByService('aadhaar')" title="Aadhaar">
+                <img src="https://iili.io/noWFX7p.jpg" alt="Aadhaar Logo" loading="lazy">
+                <span class="filter-text">Aadhaar</span>
+              </span>
+
+              <span class="filter-badge compact-filter-item pan"
+                    onclick="filterByService('pan')" title="PAN Card">
+                <img src="https://iili.io/noX3TpS.jpg" alt="PAN Card Logo" loading="lazy">
+                <span class="filter-text">PAN Card</span>
+              </span>
+
+              <span class="filter-badge compact-filter-item esarvish"
+                    onclick="filterByService('esarvish')" title="eSarvish">
+                <img src="https://iili.io/noWUHtn.jpg" alt="eSarvish Logo" loading="lazy">
+                <span class="filter-text">eSarvish</span>
+              </span>
+
+              <span class="filter-badge compact-filter-item license"
+                    onclick="filterByService('license')" title="Driving License">
+                <img src="https://iili.io/noXn9oB.png" alt="Driving License Logo" loading="lazy">
+                <span class="filter-text">Driving License</span>
+              </span>
+
+              <span class="filter-badge compact-filter-item bob-account"
+                    onclick="filterByService('bob_account')" title="BOB Account">
+                <img src="https://iili.io/noWqtGn.png" alt="Bank of Baroda Logo" loading="lazy">
+                <span class="filter-text">BOB Account</span>
+              </span>
+            </div>
           </div>
         </div>
         
@@ -1586,7 +1921,7 @@ header .site-subtitle {
         <img src="https://iili.io/noWdm2p.jpg" alt="PASSPORT Logo" loading="lazy">
         <h5 class="modal-title">Passport Application</h5>
       </div>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
         <div class="modal-body">
           <form id="passportForm">
@@ -1654,7 +1989,7 @@ header .site-subtitle {
         <img src="https://iili.io/noW3uRI.jpg" alt="EPFO Logo" loading="lazy">
         <h5 class="modal-title">EPFO Application</h5>
       </div>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
         <div class="modal-body">
           <form id="epfoForm">
@@ -1705,7 +2040,7 @@ header .site-subtitle {
         <img src="https://iili.io/noWFX7p.jpg" alt="AADHAAR Logo" loading="lazy">
         <h5 class="modal-title">Aadhaar Application</h5>
       </div>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
         <div class="modal-body">
           <form id="aadhaarForm">
@@ -1751,7 +2086,7 @@ header .site-subtitle {
         <img src="https://iili.io/noX3TpS.jpg" alt="PAN CARD Logo" loading="lazy">
         <h5 class="modal-title">PAN Card Application</h5>
       </div>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
       <div class="modal-body">
         <form id="panForm">
@@ -1787,7 +2122,7 @@ header .site-subtitle {
         <img src="https://iili.io/noWUHtn.jpg" alt="eSARVISH Logo" loading="lazy">
         <h5 class="modal-title">eSarvish Application</h5>
       </div>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
         <div class="modal-body">
           <form id="esarvishForm">
@@ -1849,7 +2184,7 @@ header .site-subtitle {
         <img src="https://iili.io/noXn9oB.png" alt="DRIVING LICENSE Logo" loading="lazy">
         <h5 class="modal-title">Driving License Application</h5>
       </div>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
         <div class="modal-body">
           <form id="licenseForm">
@@ -1917,7 +2252,7 @@ header .site-subtitle {
         <img src="https://iili.io/noXoc7a.jpg" alt="PNB ACCOUNT Logo" loading="lazy">
         <h5 class="modal-title">PNB Account Customer</h5>
       </div>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
         <div class="modal-body">
           <form id="pnbAccountForm">
@@ -1969,7 +2304,7 @@ header .site-subtitle {
         <img src="https://iili.io/noWqtGn.png" alt="BOB ACCOUNT Logo" loading="lazy">
         <h5 class="modal-title">BOB Account Customer</h5>
       </div>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
         <div class="modal-body">
           <form id="bobAccountForm">
