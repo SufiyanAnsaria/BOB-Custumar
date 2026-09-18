@@ -57,6 +57,30 @@
       font-size: 0.85rem;
       opacity: 0.8;
     }
+    /* Right-side header logo - same visual size as BOB logo */
+    .header-right-logo {
+      width: 300px !important;
+      height: 100px !important;
+      object-fit: contain !important;
+      background: transparent !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      margin-left: auto !important;
+      margin-right: 14px !important;
+      box-shadow: none !important;
+      flex: 0 0 300px !important;
+      display: block !important;
+    }
+
+    @media (max-width: 700px) {
+      .header-right-logo {
+        width: 210px !important;
+        height: 72px !important;
+        flex-basis: 210px !important;
+        margin-right: 8px !important;
+      }
+    }
+}
 
     .card {
       border: none;
@@ -1502,6 +1526,121 @@ header .site-subtitle {
   }
 </style>
 
+
+<style id="service-logo-line-fix">
+/* Service options: keep ALL options on one horizontal line */
+.service-filter-options,
+.service-filters,
+.service-tabs,
+#serviceFilterOptions {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  white-space: nowrap !important;
+  scrollbar-width: thin;
+}
+
+/* Keep each service button on one line */
+.service-filter-options > *,
+.service-filters > *,
+.service-tabs > *,
+#serviceFilterOptions > * {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+}
+
+/* ONLY enlarge Aadhaar + Driving License logos */
+.service-filter-options [data-service="aadhaar"] img,
+.service-filters [data-service="aadhaar"] img,
+.service-tabs [data-service="aadhaar"] img,
+#serviceFilterOptions [data-service="aadhaar"] img,
+.service-filter-options [data-service="license"] img,
+.service-filters [data-service="license"] img,
+.service-tabs [data-service="license"] img,
+#serviceFilterOptions [data-service="license"] img {
+  width: 42px !important;
+  height: 42px !important;
+  object-fit: contain !important;
+}
+
+/* If the icons use Font Awesome/icon elements instead of images */
+.service-filter-options [data-service="aadhaar"] .service-icon,
+.service-filters [data-service="aadhaar"] .service-icon,
+.service-tabs [data-service="aadhaar"] .service-icon,
+#serviceFilterOptions [data-service="aadhaar"] .service-icon,
+.service-filter-options [data-service="license"] .service-icon,
+.service-filters [data-service="license"] .service-icon,
+.service-tabs [data-service="license"] .service-icon,
+#serviceFilterOptions [data-service="license"] .service-icon {
+  font-size: 32px !important;
+  width: 42px !important;
+  height: 42px !important;
+}
+</style>
+
+
+<style id="aadhaar-driving-logo-size">
+  /* All service options stay in ONE horizontal line */
+  #serviceFilterOptions{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    white-space:nowrap !important;
+  }
+
+  #serviceFilterOptions .compact-filter-item{
+    flex:0 0 auto !important;
+    white-space:nowrap !important;
+  }
+
+  /* Only Aadhaar + Driving License logos are enlarged */
+  #serviceFilterOptions .compact-filter-item.aadhaar img,
+  #serviceFilterOptions .compact-filter-item.license img{
+    width:46px !important;
+    height:42px !important;
+    min-width:46px !important;
+    min-height:42px !important;
+    object-fit:contain !important;
+    padding:2px !important;
+    border-radius:5px !important;
+  }
+
+  /* Give only these two buttons enough height for the larger logo */
+  #serviceFilterOptions .compact-filter-item.aadhaar,
+  #serviceFilterOptions .compact-filter-item.license{
+    height:50px !important;
+    padding-top:4px !important;
+    padding-bottom:4px !important;
+  }
+</style>
+
+
+<style id="bob-logo-large-final">
+/* BOB Account logo: same large, clear size as requested */
+#serviceFilterOptions .compact-filter-item[data-service="bob_account"] img,
+#serviceFilterOptions [data-service="bob_account"] img,
+.service-filter-options [data-service="bob_account"] img,
+.service-filters [data-service="bob_account"] img {
+  width: 58px !important;
+  height: 46px !important;
+  min-width: 58px !important;
+  min-height: 46px !important;
+  object-fit: contain !important;
+  padding: 1px !important;
+}
+
+/* Keep the BOB option properly sized without changing other logos */
+#serviceFilterOptions .compact-filter-item[data-service="bob_account"] {
+  min-height: 50px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+</style>
+
 </head>
 <body>
   <!-- Login Modal -->
@@ -1542,6 +1681,7 @@ header .site-subtitle {
           <span class="brand-subtitle">Sufiyan CSC Center • Customer Management</span>
         </div>
       </a>
+      <img class="header-right-logo" src="https://iili.io/nzR68Ft.png" alt="Islamic Calligraphy Logo" loading="eager" decoding="async">
       <div class="three-dots-menu">
         <div class="dropdown">
           
@@ -1563,14 +1703,14 @@ header .site-subtitle {
             <li><a class="dropdown-item" href="#" id="viewAllCustomersBtn"><i class="fas fa-list"></i>View All Customers</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><h6 class="dropdown-header">Services</h6></li>
-            <li><a class="dropdown-item service-menu-item" href="#" onclick="filterByService('passport')"><i class="fas fa-passport" style="color: #2563eb;"></i>Passport Applications</a></li>
-            <li><a class="dropdown-item service-menu-item" href="#" onclick="filterByService('epfo')"><i class="fas fa-file-invoice" style="color: #7c3aed;"></i>EPFO Applications</a></li>
-            <li><a class="dropdown-item service-menu-item" href="#" onclick="filterByService('aadhaar')"><i class="fas fa-id-card" style="color: #dc2626;"></i>Aadhaar Applications</a></li>
-            <li><a class="dropdown-item service-menu-item" href="#" onclick="filterByService('pan')"><i class="fas fa-credit-card" style="color: #ea580c;"></i>PAN Card Applications</a></li>
-            <li><a class="dropdown-item service-menu-item" href="#" onclick="filterByService('esarvish')"><i class="fas fa-globe" style="color: #0891b2;"></i>eSarvish Applications</a></li>
-            <li><a class="dropdown-item service-menu-item" href="#" onclick="filterByService('license')"><i class="fas fa-id-card-alt" style="color: #16a34a;"></i>Driving License Applications</a></li>
-            <li><a class="dropdown-item service-menu-item" href="#" onclick="filterByService('pnb_account')"><i class="fas fa-university" style="color: #0066A1;"></i>PNB Account Customers</a></li>
-            <li><a class="dropdown-item service-menu-item" href="#" onclick="filterByService('bob_account')"><i class="fas fa-university" style="color: #0066a1;"></i>BOB Account Customers</a></li>
+            <li><a class="dropdown-item service-menu-item" href="#" onclick="showAllServiceData('passport')"><i class="fas fa-passport" style="color: #2563eb;"></i>Passport Applications</a></li>
+            <li><a class="dropdown-item service-menu-item" href="#" onclick="showAllServiceData('epfo')"><i class="fas fa-file-invoice" style="color: #7c3aed;"></i>EPFO Applications</a></li>
+            <li><a class="dropdown-item service-menu-item" href="#" onclick="showAllServiceData('aadhaar')"><i class="fas fa-id-card" style="color: #dc2626;"></i>Aadhaar Applications</a></li>
+            <li><a class="dropdown-item service-menu-item" href="#" onclick="showAllServiceData('pan')"><i class="fas fa-credit-card" style="color: #ea580c;"></i>PAN Card Applications</a></li>
+            <li><a class="dropdown-item service-menu-item" href="#" onclick="showAllServiceData('esarvish')"><i class="fas fa-globe" style="color: #0891b2;"></i>eSarvish Applications</a></li>
+            <li><a class="dropdown-item service-menu-item" href="#" onclick="showAllServiceData('license')"><i class="fas fa-id-card-alt" style="color: #16a34a;"></i>Driving License Applications</a></li>
+            <li><a class="dropdown-item service-menu-item" href="#" onclick="showAllServiceData('pnb_account')"><i class="fas fa-university" style="color: #0066A1;"></i>PNB Account Customers</a></li>
+            <li><a class="dropdown-item service-menu-item" href="#" onclick="showAllServiceData('bob_account')"><i class="fas fa-university" style="color: #0066a1;"></i>BOB Account Customers</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><h6 class="dropdown-header">Data Management</h6></li>
             <li><a class="dropdown-item text-danger" href="#" id="bulkDeleteBtn"><i class="fas fa-trash-alt"></i>Bulk Delete</a></li>
@@ -1814,7 +1954,7 @@ header .site-subtitle {
           <span class="input-group-text bg-white" id="searchFilterLabel">
             <i class="fas fa-search text-pnb-primary"></i>
           </span>
-          <input type="text" id="searchInput" class="form-control" placeholder="Search by name, father/husband, mobile, Aadhar, application, account number, password..." aria-label="Search customers">
+          <input type="text" id="searchInput" class="form-control" placeholder="Search by name, father/husband, mobile, Aadhar, application, account number, password..." aria-label="Search customers" autocomplete="off">
           <button id="searchBtn" class="btn btn-pnb-primary" aria-label="Search">
             <i class="fas fa-search me-1"></i> Search
           </button>
@@ -2767,6 +2907,34 @@ header .site-subtitle {
         bobAccountExistingPhoto: document.getElementById('bobAccountExistingPhoto')
       };
 
+      // HARD FIX: rebuild the search input so no old key/filter handler can block digits.
+      if (elements.searchInput) {
+        const oldSearchInput = elements.searchInput;
+        const newSearchInput = oldSearchInput.cloneNode(true);
+        newSearchInput.type = 'text';
+        newSearchInput.removeAttribute('pattern');
+        newSearchInput.removeAttribute('inputmode');
+        newSearchInput.removeAttribute('onkeypress');
+        newSearchInput.removeAttribute('onkeydown');
+        newSearchInput.removeAttribute('onkeyup');
+        newSearchInput.removeAttribute('oninput');
+        newSearchInput.setAttribute('autocomplete', 'off');
+        oldSearchInput.parentNode.replaceChild(newSearchInput, oldSearchInput);
+        elements.searchInput = newSearchInput;
+
+        // Allow English/Hindi letters AND 0-9 digits. Never block a key here.
+        newSearchInput.addEventListener('beforeinput', function(e) {
+          if (e.inputType === 'insertText' || e.inputType === 'insertCompositionText') {
+            e.stopPropagation();
+          }
+        }, true);
+        newSearchInput.addEventListener('keydown', function(e) {
+          // Explicitly allow digits, letters, space, Backspace, Delete, arrows, etc.
+          e.stopPropagation();
+        }, true);
+      }
+
+
 
       // BOB Account strict input validation
       (function initBOBStrictValidation() {
@@ -3023,6 +3191,16 @@ header .site-subtitle {
         if (elements.searchResultsHeader) elements.searchResultsHeader.innerHTML = markup;
         if (elements.applicationsHeader) elements.applicationsHeader.innerHTML = markup;
         if (elements.searchInput) {
+  // Search box accepts BOTH letters and numbers.
+  elements.searchInput.type = 'text';
+  elements.searchInput.removeAttribute('pattern');
+  elements.searchInput.removeAttribute('inputmode');
+  elements.searchInput.removeAttribute('onkeypress');
+  elements.searchInput.removeAttribute('onkeydown');
+  elements.searchInput.removeAttribute('oninput');
+  elements.searchInput.removeAttribute('onkeyup');
+  elements.searchInput.setAttribute('autocomplete', 'off');
+
           elements.searchInput.placeholder = SERVICE_SEARCH_HINTS[service] || SERVICE_SEARCH_HINTS.all;
         }
         return cols.length;
@@ -3062,7 +3240,7 @@ header .site-subtitle {
         const waNumber = waMobile.length === 10 ? `91${waMobile}` : waMobile;
         const waButton = waNumber ? `<a class="btn btn-sm btn-success whatsapp-btn" href="https://wa.me/${waNumber}" target="_blank" rel="noopener" data-whatsapp-number="${waNumber}" title="Open WhatsApp Desktop"><i class="fab fa-whatsapp"></i></a>` : '';
         const actions = `<td class="user-actions">
-          <button class="btn btn-sm btn-pnb-primary edit-btn" data-id="${id}" data-type="${type}" title="Edit"><i class="fas fa-edit"></i></button>
+          <button type="button" class="btn btn-sm btn-pnb-primary edit-btn" data-id="${id}" data-type="${type}" title="Edit" onclick="return window.cscEditCustomer(this);"><i class="fas fa-edit"></i></button>
           ${waButton}
           <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" data-type="${type}" data-direct-delete="true" type="button" title="Delete" onclick="return window.cscDeleteCustomer(this);"><i class="fas fa-trash"></i></button>
         </td>`;
@@ -3229,7 +3407,7 @@ header .site-subtitle {
           ? `<img src="${allPhotoSrc}" class="customer-photo-thumb" loading="lazy" decoding="async" alt="Customer Photo" title="View Customer Photo" data-customer-id="${id}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';"><span class="missing-data" style="display:none;">---</span>`
           : '<span class="missing-data">---</span>';
         const actions = `<td class="user-actions">
-          <button class="btn btn-sm btn-pnb-primary edit-btn" data-id="${id}" data-type="${type}" title="Edit"><i class="fas fa-edit"></i></button>
+          <button type="button" class="btn btn-sm btn-pnb-primary edit-btn" data-id="${id}" data-type="${type}" title="Edit" onclick="return window.cscEditCustomer(this);"><i class="fas fa-edit"></i></button>
           ${waButton}
           <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" data-type="${type}" data-direct-delete="true" type="button" title="Delete" onclick="return window.cscDeleteCustomer(this);"><i class="fas fa-trash"></i></button>
         </td>`;
@@ -3366,6 +3544,147 @@ header .site-subtitle {
             showAlert('Customer could not be deleted: ' + (error && error.message ? error.message : 'Unknown error'), 'danger');
           }
         }, true);
+      }
+
+      // Reliable Edit handler for dynamically-created customer rows.
+      // The button calls this directly, so Edit works even after search/filter re-render.
+      window.cscEditCustomer = async function(btn) {
+        try {
+          const custId = String(btn?.getAttribute('data-id') || '').trim();
+          const custType = String(btn?.getAttribute('data-type') || '').trim();
+          if (!custId || !custType) {
+            showAlert('Customer ID not found.', 'danger');
+            return false;
+          }
+
+          btn.disabled = true;
+          const oldHtml = btn.innerHTML;
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+          // Use the already-loaded record first; this avoids an unnecessary read.
+          const local = Array.isArray(state.allCustomersData)
+            ? state.allCustomersData.find(x => String(x.id) === custId && String(x.serviceType || '') === custType)
+            : null;
+
+          if (local) {
+            openEditModalFromData(custId, custType, local);
+            btn.disabled = false;
+            btn.innerHTML = oldHtml;
+            return false;
+          }
+
+          // Fallback: check the expected collection, then the other collection.
+          const collections = ['pnb_account','bob_account'].includes(custType)
+            ? ['customers','applications'] : ['applications','customers'];
+          let found = null;
+          for (const col of collections) {
+            const snap = await db.collection(col).doc(custId).get();
+            if (snap.exists) { found = { id: snap.id, ...snap.data() }; break; }
+          }
+          if (!found) throw new Error('Customer record not found in Firebase.');
+
+          openEditModalFromData(custId, custType, found);
+          btn.disabled = false;
+          btn.innerHTML = oldHtml;
+        } catch (error) {
+          console.error('Edit customer failed:', error);
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-edit"></i>';
+          showAlert('Edit could not be opened: ' + (error?.message || 'Unknown error'), 'danger');
+        }
+        return false;
+      };
+
+      function openEditModalFromData(custId, custType, cust) {
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        switch(custType) {
+          case 'passport':
+            document.getElementById('passportId').value = custId;
+            document.getElementById('passportName').value = cust.name || '';
+            document.getElementById('passportFatherName').value = cust.fatherName || '';
+            document.getElementById('passportMobile').value = cust.mobile || '';
+            document.getElementById('passportDOB').value = cust.dateOfBirth || '';
+            document.getElementById('passportTotal').value = cust.total || 0;
+            document.getElementById('passportPaid').value = cust.paid || 0;
+            document.getElementById('passportPending').value = cust.pending || 0;
+            document.getElementById('passportApplicationNo').value = cust.applicationNo || '';
+            passportModal.show(); return;
+          case 'epfo':
+            document.getElementById('epfoId').value = custId;
+            document.getElementById('epfoName').value = cust.name || '';
+            document.getElementById('epfoFatherName').value = cust.fatherName || '';
+            document.getElementById('epfoMobile').value = cust.mobile || '';
+            document.getElementById('epfoPFNo').value = cust.pfNo || '';
+            document.getElementById('epfoPassword').value = cust.password || '';
+            epfoModal.show(); return;
+          case 'aadhaar':
+            document.getElementById('aadhaarId').value = custId;
+            document.getElementById('aadhaarName').value = cust.name || '';
+            document.getElementById('aadhaarFatherName').value = cust.fatherName || '';
+            document.getElementById('aadhaarMobile').value = cust.mobile || '';
+            document.getElementById('aadhaarNumber').value = formatAadhar(cust.aadhar) || '';
+            updateAadhaarValidation(cust.aadhar || '');
+            aadhaarModal.show(); return;
+          case 'pan':
+            document.getElementById('panId').value = custId;
+            document.getElementById('panName').value = cust.name || '';
+            document.getElementById('panFatherName').value = cust.fatherName || '';
+            document.getElementById('panMobile').value = cust.mobile || '';
+            document.getElementById('panDOB').value = cust.dateOfBirth || cust.dob || '';
+            document.getElementById('panTotal').value = cust.total || 0;
+            document.getElementById('panPaid').value = cust.paid || 0;
+            document.getElementById('panPending').value = cust.pending || 0;
+            document.getElementById('panApplicationNo').value = cust.panNo || cust.applicationNo || '';
+            document.getElementById('panPassword').value = cust.password || '';
+            panModal.show(); return;
+          case 'esarvish':
+            document.getElementById('esarvishId').value = custId;
+            document.getElementById('esarvishName').value = cust.name || '';
+            document.getElementById('esarvishFatherName').value = cust.fatherName || '';
+            document.getElementById('esarvishMobile').value = cust.mobile || '';
+            document.getElementById('esarvishTotal').value = cust.total || 0;
+            document.getElementById('esarvishPaid').value = cust.paid || 0;
+            document.getElementById('esarvishPending').value = cust.pending || 0;
+            document.getElementById('esarvishApplicationNo').value = cust.applicationNo || '';
+            esarvishModal.show(); return;
+          case 'license':
+            document.getElementById('licenseId').value = custId;
+            document.getElementById('licenseName').value = cust.name || '';
+            document.getElementById('licenseFatherName').value = cust.fatherName || '';
+            document.getElementById('licenseMobile').value = cust.mobile || '';
+            document.getElementById('licenseTotal').value = cust.total || 0;
+            document.getElementById('licensePaid').value = cust.paid || 0;
+            document.getElementById('licensePending').value = cust.pending || 0;
+            document.getElementById('licenseApplicationNo').value = cust.applicationNo || '';
+            document.getElementById('licenseDOB').value = cust.dateOfBirth || '';
+            licenseModal.show(); return;
+          case 'pnb_account':
+            document.getElementById('accountId').value = custId;
+            document.getElementById('accountName').value = cust.name || '';
+            document.getElementById('accountFatherName').value = cust.fatherName || '';
+            document.getElementById('accountMobile').value = cust.mobile || '';
+            document.getElementById('accountAadhar').value = formatAadhar(cust.aadhar) || '';
+            document.getElementById('accountNumber').value = formatAccount(cust.account, 'pnb_account') || '';
+            updatePNBAadhaarValidation(cust.aadhar || '');
+            pnbAccountModal.show(); return;
+          case 'bob_account':
+            document.getElementById('bobAccountId').value = custId;
+            document.getElementById('bobAccountName').value = cust.name || '';
+            document.getElementById('bobAccountFatherName').value = cust.fatherName || '';
+            document.getElementById('bobAccountMobile').value = cust.mobile || '';
+            document.getElementById('bobAccountAadhar').value = formatAadhar(cust.aadhar) || '';
+            updateBOBAadhaarValidation(cust.aadhar || '');
+            document.getElementById('bobAccountNumber').value = formatAccount(cust.account, 'bob_account') || '';
+            document.getElementById('bobAccountExistingPhoto').value = cust.photoData || '';
+            document.getElementById('bobAccountPhoto').value = '';
+            const preview = document.getElementById('bobAccountPhotoPreview');
+            const status = document.getElementById('bobAccountPhotoStatus');
+            if (cust.photoData) { preview.src = cust.photoData; preview.classList.remove('d-none'); status.textContent = 'Existing photo loaded. Choose a new photo to replace it.'; }
+            else { preview.src = ''; preview.classList.add('d-none'); status.textContent = ''; }
+            bobAccountModal.show(); return;
+          default:
+            throw new Error('Unknown customer service type: ' + custType);
+        }
       }
 
       // Open edit modal with payment fields
@@ -4463,7 +4782,10 @@ header .site-subtitle {
             });
 
             state.dataLoaded = true;
-            renderCustomerResults(state.allCustomersData.slice(0, 100), 'all');
+            if (elements.resultsList) {
+      elements.resultsList.innerHTML =
+        `<tr><td colspan="${searchTableColspan('all')}" class="text-center">Select a service to view all customer data</td></tr>`;
+    }
             state.isLoading = false;
             return state.allCustomersData.length;
           })
@@ -4658,8 +4980,8 @@ header .site-subtitle {
           return;
         }
 
-        if (searchTerm.length < 2) {
-          if (elements.resultsList) elements.resultsList.innerHTML = `<tr><td colspan="${searchTableColspan(service)}" class="text-center">Please enter at least 2 characters to search</td></tr>`;
+        if (normalizeSearchValue(searchTerm).length < 4) {
+          if (elements.resultsList) elements.resultsList.innerHTML = `<tr><td colspan="${searchTableColspan(service)}" class="text-center">Please enter at least 4 characters or digits to search</td></tr>`;
           if (elements.searchStats) elements.searchStats.textContent = '';
           return;
         }
@@ -4691,21 +5013,46 @@ header .site-subtitle {
         addTableEventListeners();
       }
 
-      function matchesSearch(data, term) {
-        const searchFields = [
-          data.name,
-          data.fatherName,
-          data.mobile,
-          data.aadhar ? data.aadhar.toString() : '',
-          data.applicationNo,
-          data.account ? data.account.toString() : '',
-          data.panNo,
-          data.pfNo,
-          data.password
-        ].filter(field => field).join(' ').toLowerCase();
-        
-        return searchFields.includes(term.toLowerCase());
-      }
+      function normalizeSearchValue(value) {
+  return String(value ?? '')
+    .toLowerCase()
+    .normalize('NFKC')
+    .replace(/[\s\-\/\\().,]/g, '');
+}
+
+function matchesSearch(data, term) {
+  const normalizedTerm = normalizeSearchValue(term);
+
+  if (!normalizedTerm) return false;
+
+  const searchFields = [
+    data.name,
+    data.fatherName,
+    data.mobile,
+    data.aadhar,
+    data.aadhaar,
+    data.applicationNo,
+    data.applicationNumber,
+    data.account,
+    data.accountNo,
+    data.accountNumber,
+    data.panNo,
+    data.pan,
+    data.pfNo,
+    data.pfNumber,
+    data.uanNo,
+    data.uanNumber,
+    data.customerId,
+    data.customerID,
+    data.address
+  ];
+
+  return searchFields.some(value =>
+    normalizeSearchValue(value).includes(normalizedTerm)
+  );
+}
+
+
 
       // Filter functions
       setTableHeaders('all');
@@ -4747,9 +5094,64 @@ header .site-subtitle {
         } else {
           setTableHeaders(service);
           if (elements.resultsList) {
+            const service = state.currentServiceFilter || 'all';
             elements.resultsList.innerHTML = `<tr><td colspan="${searchTableColspan(service)}" class="text-center">Enter search term to find customers</td></tr>`;
           }
           if (elements.searchStats) elements.searchStats.textContent = '';
+        }
+      };
+
+      // Screenshot 2 / Menu > Services:
+      // Clicking a service here shows ALL customer records for that service.
+      // This is intentionally separate from the Screenshot 1 service badges,
+      // which remain search-only.
+      window.showAllServiceData = function(service) {
+        const serviceNames = {
+          passport: 'Passport',
+          epfo: 'EPFO',
+          aadhaar: 'Aadhaar',
+          pan: 'PAN Card',
+          esarvish: 'eSarvish',
+          license: 'Driving License',
+          pnb_account: 'PNB Account',
+          bob_account: 'BOB Account'
+        };
+
+        state.currentServiceFilter = service;
+
+        if (elements.searchInput) elements.searchInput.value = '';
+        if (elements.currentFilterBadge) {
+          elements.currentFilterBadge.textContent = serviceNames[service] || 'Customers';
+        }
+        if (elements.serviceTypeBadge) {
+          elements.serviceTypeBadge.textContent = (serviceNames[service] || service) + ' Customers';
+        }
+        if (elements.serviceTypeTitle) {
+          elements.serviceTypeTitle.textContent = (serviceNames[service] || service) + ' Customers';
+        }
+
+        setTableHeaders(service);
+
+        const render = () => {
+          loadFilteredCustomers(service);
+        };
+
+        if (!state.allCustomersData || !state.allCustomersData.length) {
+          if (elements.resultsList) {
+            elements.resultsList.innerHTML =
+              `<tr><td colspan="${searchTableColspan(service)}" class="text-center">Loading customer data...</td></tr>`;
+          }
+          loadAllCustomers().then(render);
+        } else {
+          render();
+        }
+
+        if (filterServiceToggle && serviceFilterOptions) {
+          filterServiceToggle.setAttribute('aria-expanded', 'false');
+          serviceFilterOptions.classList.add('d-none');
+        }
+        if (elements.allApplicationsCard) {
+          elements.allApplicationsCard.classList.add('d-none');
         }
       };
 
@@ -4783,9 +5185,13 @@ header .site-subtitle {
         if (elements.serviceTypeTitle) {
           elements.serviceTypeTitle.textContent = (serviceNames[service] || service) + ' Customers';
         }
-        // Render the selected service immediately in the single Search Customers table.
-        // Data is read from the in-memory cache, so switching services stays fast.
-        loadFilteredCustomers(service);
+        // IMPORTANT: Selecting a service must NOT show all customers.
+        // Show data only after the user searches in the Search box.
+        setTableHeaders(service);
+        if (elements.resultsList) {
+          elements.resultsList.innerHTML = `<tr><td colspan="${searchTableColspan(service)}" class="text-center">Search for a customer in ${serviceNames[service] || service}</td></tr>`;
+        }
+        if (elements.searchStats) elements.searchStats.textContent = '';
       };
 
       function loadFilteredCustomers(service) {
@@ -5308,7 +5714,7 @@ header .site-subtitle {
         elements.searchInput.addEventListener('input', () => {
           clearTimeout(searchTimer);
           searchTimer = setTimeout(() => {
-            if (elements.searchInput.value.trim().length >= 2) performSearch();
+            if (elements.searchInput.value.trim().length >= 4) performSearch();
           }, 180);
         });
         elements.searchInput.addEventListener('keypress', (e) => {
@@ -5444,7 +5850,11 @@ header .site-subtitle {
             elements.resultsList.innerHTML = `<tr><td colspan="${searchTableColspan(service)}" class="text-center">Enter search term to find customers</td></tr>`;
           }
           if (elements.searchStats) elements.searchStats.textContent = '';
-          setServiceFilter('all');
+          state.currentServiceFilter = 'all';
+          if (elements.currentFilterBadge) elements.currentFilterBadge.textContent = 'All Customers';
+          if (elements.serviceTypeBadge) elements.serviceTypeBadge.textContent = 'All Customers';
+          if (elements.serviceTypeTitle) elements.serviceTypeTitle.textContent = 'Search Customers';
+          setTableHeaders('all');
         });
       }
       
@@ -5482,8 +5892,17 @@ header .site-subtitle {
         });
       }
 
-      // Initialize
-      setServiceFilter('all');
+      // Initialize Search Customers WITHOUT showing all customer data.
+      // Service/application options remain available; clicking one will show its data.
+      state.currentServiceFilter = 'all';
+      if (elements.currentFilterBadge) elements.currentFilterBadge.textContent = 'Select Service';
+      if (elements.serviceTypeBadge) elements.serviceTypeBadge.textContent = 'Select Service';
+      if (elements.serviceTypeTitle) elements.serviceTypeTitle.textContent = 'Search Customers';
+      setTableHeaders('all');
+      if (elements.resultsList) {
+        elements.resultsList.innerHTML = `<tr><td colspan="${searchTableColspan('all')}" class="text-center">Select a service/application above to view customer data</td></tr>`;
+      }
+      if (elements.searchStats) elements.searchStats.textContent = '';
     });
   </script>
 
